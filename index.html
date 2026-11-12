@@ -1,0 +1,2253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12151a">
+<meta name="description" content="صدى برو — استوديو تسجيل احترافي متعدد المسارات">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="صدى برو">
+<title>صدى برو — استوديو التسجيل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0f12; --bg2:#14171c; --bg3:#1b1f26; --bg4:#232833; --line:#2a303b; --line2:#363d4a;
+  --tx:#e6e9ee; --tx2:#9aa3b2; --tx3:#6b7383;
+  --acc:#3ddc97; --acc2:#2bb37a; --rec:#ff4d5e; --warn:#ffb547; --blue:#4da3ff; --purple:#a77bff;
+  --head:240px; --rowh:96px; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;overscroll-behavior:none;background:var(--bg);color:var(--tx);font-family:'Tajawal',system-ui,sans-serif;font-size:14px;overflow:hidden}
+button,input,select{font-family:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line2);background:var(--bg3);border-radius:8px;padding:6px 10px;font-size:13px;font-weight:500;transition:.12s}
+button:hover{background:var(--bg4);border-color:#4a5262}
+button.on{background:rgba(61,220,151,.15);border-color:var(--acc);color:var(--acc)}
+button:disabled{opacity:.4;cursor:default}
+select,input[type=number],input[type=text]{background:var(--bg);border:1px solid var(--line2);border-radius:7px;padding:5px 8px;font-size:13px}
+input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;width:100%;height:18px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--line2);border-radius:4px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--acc);margin-top:-4.5px;box-shadow:0 0 0 3px rgba(61,220,151,.15)}
+input[type=range]::-moz-range-track{height:4px;background:var(--line2);border-radius:4px}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--acc)}
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(180deg,#171b21,#12151a);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:.2px}
+.brand .logo{width:34px;height:34px;border-radius:9px;background:conic-gradient(from 200deg,var(--acc),var(--blue),var(--purple),var(--acc));display:grid;place-items:center}
+.brand .logo i{display:block;width:14px;height:14px;border-radius:50%;background:#0d0f12;box-shadow:0 0 0 3px rgba(255,255,255,.08)}
+.brand small{display:block;font-size:11px;color:var(--tx3);font-weight:500}
+.transport{display:flex;gap:6px;align-items:center;background:var(--bg);padding:5px;border-radius:12px;border:1px solid var(--line)}
+.tbtn{width:40px;height:36px;padding:0;display:grid;place-items:center;border-radius:9px}
+.tbtn svg{width:18px;height:18px;fill:currentColor}
+.tbtn.rec{color:var(--rec)}
+.tbtn.rec.on{background:var(--rec);color:#fff;border-color:var(--rec);animation:pulse 1s infinite}
+.tbtn.play.on{background:var(--acc);color:#06140d;border-color:var(--acc)}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(255,77,94,.2)}}
+.clock{font-family:var(--mono);background:#07090b;border:1px solid var(--line);border-radius:10px;padding:4px 14px;text-align:center;direction:ltr;min-width:170px}
+.clock .t{font-size:22px;color:var(--acc);font-weight:700;letter-spacing:1px}
+.clock .b{font-size:11px;color:var(--tx3)}
+.grp{display:flex;gap:6px;align-items:center}
+.grp label{font-size:12px;color:var(--tx2)}
+.sep{width:1px;height:30px;background:var(--line)}
+.spacer{flex:1}
+.btn-acc{background:var(--acc);color:#06140d;border-color:var(--acc);font-weight:700}
+.btn-acc:hover{background:#56e8a8}
+
+/* dashboard */
+.dash{min-width:0;display:grid;grid-template-columns:1.1fr 1.4fr 1fr 2.2fr 1.5fr;gap:10px;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--line)}
+.card{min-width:0;background:var(--bg3);border:1px solid var(--line);border-radius:12px;padding:9px 12px;min-height:84px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.card h4{font-size:11.5px;color:var(--tx3);font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.card canvas{width:100%;height:40px;flex:none;display:block;border-radius:6px;background:#0a0c0f}
+.card.spec canvas{height:58px}
+.status{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--tx3)}
+.dot.play{background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.dot.rec{background:var(--rec);box-shadow:0 0 10px var(--rec);animation:pulse 1s infinite}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:12px}
+.stats b{font-family:var(--mono);color:var(--tx);font-weight:700;direction:ltr;display:inline-block}
+.stats span{color:var(--tx2)}
+.mono{font-family:var(--mono);direction:ltr;display:inline-block}
+
+/* editor */
+.editor{flex:1;min-height:0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--bg)}
+.etools{display:flex;gap:8px;align-items:center;padding:8px 16px;border-bottom:1px solid var(--line);background:var(--bg2);flex-wrap:wrap}
+.etools .hint{color:var(--tx3);font-size:12px}
+.scroll{flex:1;overflow:auto;position:relative;direction:ltr;min-width:0}
+.content{position:relative;direction:ltr;min-height:100%}
+.row{display:flex;border-bottom:1px solid var(--line)}
+.ruler-row{position:sticky;top:0;z-index:20;height:30px;background:var(--bg2);border-bottom:1px solid var(--line2)}
+.corner{position:sticky;left:0;z-index:25;width:var(--head);min-width:var(--head);background:var(--bg2);border-right:1px solid var(--line2);font-size:11px;color:var(--tx3);display:flex;align-items:center;justify-content:center;direction:rtl}
+.ruler{position:relative;cursor:text;touch-action:none}
+.ruler canvas{position:absolute;top:0;height:30px}
+.thead{position:sticky;left:0;z-index:15;width:var(--head);min-width:var(--head);background:var(--bg2);border-right:1px solid var(--line2);padding:7px 9px 7px 12px;display:flex;flex-direction:column;gap:5px;direction:rtl;cursor:pointer}
+.thead.sel{background:#1a2027}
+.thead .strip{position:absolute;right:0;top:0;bottom:0;width:4px}
+.compact{--rowh:58px}
+.compact .thead{padding:4px 9px 4px 12px;gap:3px}
+.compact .thead .r2:nth-of-type(4),.compact .tmeter{display:none}
+.compact .clip .cn{font-size:9.5px;padding:1px 5px}
+.compact .clip canvas{top:13px;height:calc(100% - 13px)}
+.thead .r1{display:flex;gap:4px;align-items:center}
+.thead .name{flex:1;min-width:0;background:transparent;border:1px solid transparent;font-weight:700;font-size:13px;padding:2px 4px}
+.thead .name:focus{border-color:var(--line2);background:var(--bg)}
+.mini{width:24px;height:22px;padding:0;font-size:11px;font-weight:800;border-radius:5px}
+.mini.m.on{background:var(--warn);color:#1a1200;border-color:var(--warn)}
+.mini.s.on{background:var(--blue);color:#001226;border-color:var(--blue)}
+.mini.r.on{background:var(--rec);color:#fff;border-color:var(--rec)}
+.mini.x{color:var(--tx3);border-color:transparent;background:transparent}
+.mini.x:hover{color:var(--rec)}
+.thead .r2{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:center;font-size:11px;color:var(--tx2)}
+.thead .val{font-family:var(--mono);font-size:10px;color:var(--tx3);min-width:38px;text-align:left;direction:ltr}
+.tmeter{height:4px;background:#0a0c0f;border-radius:3px;overflow:hidden}
+.tmeter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc) 0 70%,var(--warn) 85%,var(--rec));transition:width .05s}
+.lane{position:relative;height:100%;background-color:#101317;
+  background-image:linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:var(--bar) 100%,var(--beat) 100%}
+.lane.sel{background-color:#12171c}
+.lane.drop{outline:2px dashed var(--acc);outline-offset:-3px}
+.clip{touch-action:none;position:absolute;top:5px;bottom:5px;border-radius:7px;overflow:hidden;cursor:grab;border:1px solid rgba(255,255,255,.18)}
+.clip.sel{outline:2px solid #fff;outline-offset:-1px;z-index:3}
+.clip .cn{position:absolute;top:0;left:0;right:0;font-size:10.5px;padding:2px 6px;background:rgba(0,0,0,.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;font-weight:700;direction:rtl;text-align:right}
+.clip canvas{position:absolute;left:0;top:16px;bottom:0;height:calc(100% - 16px);pointer-events:none}
+
+.recclip{position:absolute;top:5px;bottom:5px;border-radius:7px;background:rgba(255,77,94,.25);border:1px solid var(--rec);pointer-events:none}
+.recclip span{font-size:10.5px;color:#ffb3bb;padding:2px 6px;display:block;font-weight:700}
+.playhead{position:absolute;top:0;bottom:0;width:2px;background:#ffdd57;z-index:18;pointer-events:none;box-shadow:0 0 8px rgba(255,221,87,.5)}
+.playhead:before{content:"";position:absolute;top:0;left:-6px;border:7px solid transparent;border-top:9px solid #ffdd57}
+.loopzone{position:absolute;top:30px;bottom:0;background:rgba(77,163,255,.07);border-left:1px solid rgba(77,163,255,.6);border-right:1px solid rgba(77,163,255,.6);pointer-events:none;z-index:2;display:none}
+.empty{padding:50px 20px;text-align:center;color:var(--tx3);direction:rtl}
+.empty b{display:block;color:var(--tx2);font-size:16px;margin-bottom:6px}
+
+/* panel */
+.panel{flex:none;background:var(--bg2);border-top:1px solid var(--line2);height:272px;display:flex;flex-direction:column}
+.tabs{display:flex;gap:2px;padding:0 12px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;border-radius:0;padding:9px 14px;color:var(--tx2);border-bottom:2px solid transparent;font-weight:700}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc);background:transparent}
+.tab:hover{background:var(--bg3)}
+.pbody{flex:1;overflow:auto;padding:12px 16px}
+.pane{display:none}
+.pane.on{display:block}
+.fxgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.fxbox{background:var(--bg3);border:1px solid var(--line);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:5px}
+.fxbox h5{font-size:12px;display:flex;justify-content:space-between;align-items:center;color:var(--tx)}
+.fxbox h5 .sw{font-size:11px;font-weight:500;color:var(--tx2);display:flex;gap:4px;align-items:center}
+.ctl{display:grid;grid-template-columns:62px 1fr 54px;gap:6px;align-items:center;font-size:11.5px;color:var(--tx2)}
+.ctl .v{font-family:var(--mono);font-size:10.5px;color:var(--tx);text-align:left;direction:ltr}
+.phead{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.phead .ttl{font-weight:800;font-size:15px}
+.chip{display:inline-block;width:10px;height:10px;border-radius:3px}
+.note{color:var(--tx3);font-size:12px}
+.row-btns{display:flex;gap:6px;flex-wrap:wrap}
+.toggle{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--tx2);cursor:pointer}
+input[type=checkbox]{accent-color:var(--acc);width:15px;height:15px}
+
+.toast{position:fixed;bottom:270px;left:50%;transform:translateX(-50%) translateY(20px);background:#222833;border:1px solid var(--line2);padding:10px 18px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:100;font-weight:500;max-width:80vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;place-items:center;z-index:90}
+.modal.show{display:grid}
+.modal .box{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:22px 26px;min-width:320px;text-align:center}
+.modal .bar{height:6px;background:var(--bg);border-radius:4px;overflow:hidden;margin-top:14px}
+.modal .bar i{display:block;height:100%;width:40%;background:var(--acc);animation:ld 1s infinite linear}
+@keyframes ld{from{transform:translateX(-120%)}to{transform:translateX(320%)}}
+.keyboard{position:relative;height:118px;user-select:none;max-width:1400px}
+.keyboard .whites{display:flex;height:100%;gap:2px}
+.pk{position:relative;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:5px;font-family:var(--mono);transition:background .05s}
+.pk.wht{flex:1;background:linear-gradient(180deg,#e9edf2,#fff 70%);border-radius:0 0 6px 6px;color:#556}
+.pk.wht.down{background:linear-gradient(180deg,#9ff0c9,#3ddc97);color:#06140d}
+.pk.blk{position:absolute;top:0;height:62%;background:linear-gradient(180deg,#2a2f38,#0b0d10);border-radius:0 0 5px 5px;z-index:2;color:#aab;box-shadow:0 3px 6px rgba(0,0,0,.5)}
+.pk.blk.down{background:linear-gradient(180deg,#2bb37a,#167a52);color:#fff}
+.pk em{font-style:normal;font-size:10px;font-weight:700;opacity:.8}
+.pk small{font-size:9px;opacity:.6}
+.capbtn{border-color:var(--rec);color:#ffb3bb}
+.pianorec{border-color:var(--rec);color:var(--rec)}
+.pianorec.recon{background:var(--rec);color:#fff;animation:pulse 1s infinite}
+.atbox{grid-column:span 2;border-color:rgba(167,123,255,.45);background:linear-gradient(160deg,rgba(167,123,255,.10),var(--bg3) 60%)}
+.atbox select{width:100%}
+.badge{font-size:9.5px;font-weight:800;padding:1px 5px;border-radius:4px;background:rgba(167,123,255,.2);color:var(--purple);white-space:nowrap}
+.tab.ai{color:#c9a8ff}.tab.ai.on{color:var(--purple);border-bottom-color:var(--purple)}
+.aiwrap{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;height:100%}
+.ailog{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;overflow:auto;height:196px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:88%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.6}
+.msg.user{align-self:flex-start;background:var(--acc);color:#06140d;font-weight:700;border-bottom-right-radius:3px}
+.msg.ai{align-self:flex-end;background:linear-gradient(160deg,rgba(167,123,255,.18),var(--bg3));border:1px solid rgba(167,123,255,.35);border-bottom-left-radius:3px}
+.msg ul{margin:4px 18px 0 0;font-size:12px;color:var(--tx2)}
+.aiside{display:flex;flex-direction:column;gap:8px;min-width:0}
+.aiform{display:flex;gap:6px}.aiform input{flex:1;padding:9px 12px;font-size:14px;border-radius:10px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip2{font-size:11.5px;padding:4px 9px;border-radius:20px;background:var(--bg);border-color:var(--line2)}
+.chip2:hover{border-color:var(--purple);color:#d8c6ff}
+.mini2{font-size:10.5px;padding:2px 7px;border-radius:5px}
+.echobox{grid-column:span 2}
+.aitarget{font-size:12.5px;color:var(--tx2)}
+kbd{font-family:var(--mono);font-size:10.5px;background:var(--bg);border:1px solid var(--line2);border-radius:4px;padding:0 5px}
+.dashtoggle{display:none}
+@media (max-width:820px){
+  :root{--head:150px;--rowh:84px}
+  body{font-size:13px}
+  .top{gap:6px;padding:6px 8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .top::-webkit-scrollbar,.etools::-webkit-scrollbar{display:none}
+  .top>*{flex-shrink:0}
+  .top .grp{flex-wrap:nowrap}
+  .etools{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.etools>*{flex-shrink:0}
+  .dash{display:none}.dash.show{display:grid}
+  .brand small,.sep,.grp label{display:none}
+  .brand{font-size:15px}.brand .logo{width:28px;height:28px}
+  .transport{padding:3px}.tbtn{width:36px;height:34px}
+  .clock{min-width:118px;padding:2px 8px}.clock .t{font-size:17px}
+  .top .grp button{padding:5px 7px;font-size:11.5px}
+  .top>.grp:has(#zoom){min-width:90px!important}
+  #bSave,#bOpen,#bExport{padding:5px 8px;font-size:11.5px}
+  .spacer{display:none}
+  .dash{grid-template-columns:1fr 1fr;gap:6px;padding:6px 8px}
+  .dash .card.spec,.dash .card:last-child{display:none}
+  .card{min-height:0;padding:6px 9px}.status{font-size:15px}
+  .dashtoggle{display:inline-block}
+  .etools{padding:6px 8px;gap:5px}.etools .hint{display:none}
+  .etools button{padding:5px 8px;font-size:12px}
+  .thead{padding:5px 6px 5px 9px}
+  .thead .r2{grid-template-columns:1fr auto;font-size:10px}.thead .r2>span:first-child{display:none}
+  .mini{width:22px;height:22px}
+  .mini.x{display:none}
+  .thead .r1{gap:3px}
+  .panel{height:42vh;height:42dvh}
+  .tabs{overflow-x:auto;padding:0 4px}.tab{padding:8px 9px;white-space:nowrap;font-size:12px}
+  .pbody{padding:8px}
+  .fxgrid{grid-template-columns:1fr 1fr}
+  .atbox,.echobox{grid-column:span 2}
+  .aiwrap{grid-template-columns:1fr;height:auto}.ailog{height:150px}
+  .keyboard{height:96px}
+  .pk em{font-size:8px}
+  .phead{gap:6px}.phead .note{display:none}
+  .toast{bottom:46vh}
+  .ctl{grid-template-columns:52px 1fr 46px}
+}
+@media (max-width:480px){ .fxgrid{grid-template-columns:1fr} .atbox,.echobox{grid-column:span 1} .dash{grid-template-columns:1fr 1fr} }
+@media (max-width:1300px){.dash{grid-template-columns:1fr 1fr 1fr}.dash .card.spec{grid-column:span 2}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ===== TOP BAR ===== -->
+<header class="top">
+  <div class="brand"><div class="logo"><i></i></div><div>صدى برو<small>استوديو تسجيل متعدد المسارات</small></div></div>
+  <div class="sep"></div>
+  <div class="transport">
+    <button class="tbtn" id="bHome" title="البداية (Home)"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14l-10-7z"/></svg></button>
+    <button class="tbtn" id="bStop" title="إيقاف"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg></button>
+    <button class="tbtn play" id="bPlay" title="تشغيل/إيقاف مؤقت (Space)"><svg viewBox="0 0 24 24" id="playIco"><path d="M7 5v14l12-7z"/></svg></button>
+    <button class="tbtn rec" id="bRec" title="تسجيل (R)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg></button>
+    <button class="tbtn" id="bLoop" title="تكرار (L)"><svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2z"/></svg></button>
+  </div>
+  <div class="clock"><div class="t" id="clock">00:00.000</div><div class="b" id="bars">Bar 1 · Beat 1</div></div>
+  <div class="grp"><label>BPM</label><input type="number" id="bpm" value="90" min="40" max="240" style="width:64px"></div>
+  <div class="grp"><label>الميزان</label><select id="sig"><option value="4">4/4</option><option value="3">3/4</option><option value="6">6/8</option></select></div>
+  <div class="grp">
+    <button id="bMetro" title="مترونوم (M)">🎵 مترونوم</button>
+    <button id="bCount" class="on" title="عدّ تنازلي قبل التسجيل">⏱ عدّ قبل التسجيل</button>
+    <button id="bSnap" class="on" title="المحاذاة على الإيقاع">🧲 محاذاة</button>
+  </div>
+  <div class="grp" style="min-width:160px"><label>تكبير</label><input type="range" id="zoom" min="10" max="500" value="60"></div>
+  <div class="spacer"></div>
+  <button id="bInstall" class="btn-acc" style="display:none">📲 ثبّت التطبيق</button>
+  <button id="bSave" title="حفظ المشروع (Ctrl+S)">💾 حفظ المشروع</button>
+  <button id="bOpen" title="فتح مشروع محفوظ">📂 فتح مشروع</button>
+  <input type="file" id="projFile" accept=".sadapro,.zip,application/zip" hidden>
+  <button class="btn-acc" id="bExport">⬇ تصدير WAV</button>
+</header>
+
+<!-- ===== DASHBOARD ===== -->
+<section class="dash">
+  <div class="card"><h4>الحالة</h4><div class="status"><span class="dot" id="sDot"></span><span id="sTxt">جاهز</span></div><div class="note" id="sSub">اضغط تشغيل أو تسجيل للبدء</div></div>
+  <div class="card"><h4>مستوى المايك <span class="mono" id="inDb">— dB</span></h4><canvas id="cIn" height="40"></canvas><div class="note" id="micState">المايك غير مفعّل</div></div>
+  <div class="card"><h4>الماستر L / R <span class="mono" id="mDb">— dB</span></h4><canvas id="cMaster" height="40"></canvas></div>
+  <div class="card spec"><h4>المحلل الطيفي <span>الماستر</span></h4><canvas id="cSpec" height="60"></canvas></div>
+  <div class="card"><h4>المشروع</h4>
+    <div class="stats">
+      <span>المسارات</span><b id="stT">0</b>
+      <span>المقاطع</span><b id="stC">0</b>
+      <span>المدة</span><b id="stD">0:00</b>
+      <span>العيّنة</span><b id="stSR">—</b>
+      <span>التأخير</span><b id="stLat">—</b>
+      <span>التسجيلات</span><b id="stR">0</b>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EDITOR ===== -->
+<section class="editor">
+  <div class="etools">
+    <button id="bAdd">＋ مسار جديد</button>
+    <button id="bImport">📂 استيراد لحن / صوت</button>
+
+    <div class="grp"><select id="beatStyle"><option value="pop">بوب</option><option value="trap">تراب</option><option value="boombap">بوم باب</option><option value="khaleeji">خليجي</option></select><button id="bDemo">🥁 ولّد بيت</button></div>
+    <button id="bCompact">📏 عرض مضغوط</button>
+    <button class="dashtoggle" id="bDash">📊 اللوحة</button>
+    <button id="bUndo" title="تراجع (Ctrl+Z)">↶ تراجع</button>
+    <div class="sep"></div>
+    <span class="hint">اسحب ملفات صوتية إلى المسارات · اضغط على المسطرة للانتقال · اسحب على المسطرة لتحديد منطقة التكرار · <kbd>Space</kbd> تشغيل · <kbd>R</kbd> تسجيل · <kbd>S</kbd> قص · <kbd>Del</kbd> حذف</span>
+    <input type="file" id="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac,.aac" multiple hidden>
+  </div>
+  <div class="scroll" id="scroll">
+    <div class="content" id="content">
+      <div class="row ruler-row"><div class="corner">المسارات</div><div class="ruler" id="ruler"><canvas id="cRuler"></canvas></div></div>
+      <div id="rows"></div>
+      <div class="loopzone" id="loopzone"></div>
+      <div class="playhead" id="playhead"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PANEL ===== -->
+<section class="panel">
+  <div class="tabs">
+    <button class="tab ai" data-p="pAI">🤖 المساعد الذكي</button>
+    <button class="tab on" data-p="pFx">🎛 مؤثرات المسار</button>
+    <button class="tab" data-p="pMaster">🎚 الماستر</button>
+    <button class="tab" data-p="pClip">✂ المقطع المحدد</button>
+    <button class="tab" data-p="pPiano">🎹 البيانو</button>
+    <button class="tab" data-p="pSet">🎤 إعدادات التسجيل</button>
+  </div>
+  <div class="pbody">
+    <div class="pane" id="pAI"></div>
+    <div class="pane on" id="pFx"></div>
+    <div class="pane" id="pMaster"></div>
+    <div class="pane" id="pClip"></div>
+    <div class="pane" id="pPiano"></div>
+    <div class="pane" id="pSet"></div>
+  </div>
+</section>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="micHelp"><div class="box" style="max-width:360px;line-height:1.9">
+  <div style="font-size:18px;font-weight:800;margin-bottom:6px">🎤 المايك غير متاح في هذي الصفحة</div>
+  سجّل صوتك بتطبيق <b>المذكرات الصوتية</b> في الآيفون، ثم من التسجيل: <b>مشاركة ← حفظ في الملفات</b>. بعدها اضغط الزر تحت واختر التسجيل، ويدخل على المسار مع كل الفلاتر والأوتوتون.
+  <div class="row-btns" style="justify-content:center;margin-top:10px"><button class="btn-acc" id="micHelpCap">📂 اختر تسجيلك</button><button onclick="document.getElementById('micHelp').classList.remove('show')">إغلاق</button></div></div></div>
+<div class="modal" id="iosHint"><div class="box" style="max-width:340px;line-height:1.9">
+  <div style="font-size:18px;font-weight:800;margin-bottom:6px">📲 تثبيت على الآيفون</div>
+  1) اضغط زر <b>المشاركة</b> <span style="font-size:18px">⎋</span> أسفل سفاري<br>2) اختر <b>«إضافة إلى الشاشة الرئيسية»</b><br>3) اضغط <b>إضافة</b> — وبيطلع التطبيق بأيقونته
+  <div style="margin-top:12px"><button class="btn-acc" onclick="document.getElementById('iosHint').classList.remove('show')">تمام</button></div></div></div>
+<div class="modal" id="modal"><div class="box"><div id="modalTxt" style="font-weight:700">جاري المعالجة…</div><div class="bar"><i></i></div></div></div>
+
+<script>
+'use strict';
+/* =========================================================
+   STATE
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const HEAD = 240;
+const COLORS = ['#3ddc97','#4da3ff','#ff8a4d','#a77bff','#ff5fa2','#ffd24d','#4de1e8','#9be36b','#ff6b6b','#c9a0ff','#5ce1b0','#f0a35e'];
+const S = {
+  bpm:90, sig:4, pps:60, playhead:0, playing:false, recording:false,
+  metro:false, countIn:true, loop:false, loopStart:0, loopEnd:8, snap:true,
+  sel:null, selClip:null, monitor:false, monitorFx:true, inGainDb:0, latExtraMs:0,
+  ec:false, ns:false, deviceId:'', returnPos:0, recCount:0,
+  mfx:{low:0, mid:0, high:0, glue:false, limiter:true, vol:0}
+};
+let tracks = [];
+let uid = 1;
+let ctx = null, M = null;               // audio context + master nodes
+let sources = [], startCtxTime = 0, startPos = 0;
+let undoStack = [];
+
+const defFx = () => ({hpOn:false,hp:80,lpOn:false,lp:12000,low:0,mid:0,midF:1000,high:0,drive:0,
+  compOn:false,th:-18,ratio:3,delayMix:0,delayTime:.3,delayFb:.3,delaySync:'free',delayPP:false,revMix:0,revSize:2,geq:[0,0,0,0,0,0]});
+
+const PRESETS = {
+  'نظيف (بدون مؤثرات)': {},
+  'فوكال احترافي': {hpOn:true,hp:90,low:-2,mid:2,midF:3000,high:3,compOn:true,th:-22,ratio:4,revMix:.16,revSize:1.8,delayMix:.07,delayTime:.25,delayFb:.2},
+  'راب / تراب': {hpOn:true,hp:100,mid:3,midF:2500,high:4,compOn:true,th:-26,ratio:6,drive:.05,revMix:.08,revSize:1.2},
+  'إذاعي عميق': {hpOn:true,hp:60,low:4,mid:-2,midF:400,high:2,compOn:true,th:-24,ratio:4},
+  'راديو قديم': {hpOn:true,hp:400,lpOn:true,lp:4000,mid:6,midF:1500,drive:.15,compOn:true,th:-25,ratio:6},
+  'تلفون': {hpOn:true,hp:700,lpOn:true,lp:3000,mid:8,midF:1800,drive:.3},
+  'قاعة كبيرة': {revMix:.45,revSize:4,hpOn:true,hp:80},
+  'صدى (Echo)': {delayMix:.35,delayTime:.375,delayFb:.45,revMix:.1},
+  'بيس قوي': {low:8,compOn:true,th:-15,ratio:3},
+  'لو-فاي': {lpOn:true,lp:3500,drive:.1,low:3,high:-6,revMix:.15,revSize:1.5},
+};
+
+/* =========================================================
+   AUDIO ENGINE
+   ========================================================= */
+function ensureCtx(){
+  if(!ctx){
+    ctx = new (window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});
+    M = buildMaster(ctx, S.mfx, true);
+    M.output.connect(ctx.destination);
+    tracks.forEach(t => attachTrackNodes(t));
+    $('#stSR').textContent = (ctx.sampleRate/1000).toFixed(1)+'k';
+    startSchedulers();
+  }
+  if(ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+
+const irCache = new Map();
+function getIR(sr, size){
+  const key = sr+'_'+size.toFixed(1);
+  if(irCache.has(key)) return irCache.get(key);
+  const len = Math.floor(sr*size), b = new AudioBuffer({numberOfChannels:2,length:len,sampleRate:sr});
+  for(let ch=0; ch<2; ch++){
+    const d = b.getChannelData(ch);
+    for(let i=0;i<len;i++){ const t=i/len; d[i]=(Math.random()*2-1)*Math.pow(1-t,3.2)*(i<sr*.004?i/(sr*.004):1); }
+  }
+  irCache.set(key,b); return b;
+}
+function driveCurve(a){
+  const k=a*120, n=2048, c=new Float32Array(n);
+  for(let i=0;i<n;i++){ const x=i*2/n-1; c[i]=(1+k)*x/(1+k*Math.abs(x)); }
+  return c;
+}
+const dbToGain = db => Math.pow(10, db/20);
+
+const GEQ_F = [80, 250, 800, 2500, 6000, 12000];
+const GEQ_L = ['80', '250', '800', '2.5k', '6k', '12k'];
+const SYNC_OPTS = {'free':'حر (بالثواني)','1/2':'1/2 نوتة','1/4':'1/4 ربع','1/8.':'1/8 منقّطة','1/8':'1/8 ثُمن','1/16':'1/16'};
+function delayTimeOf(fx){
+  const beat = 60/S.bpm;
+  const m = {'1/2':beat*2,'1/4':beat,'1/8.':beat*.75,'1/8':beat/2,'1/16':beat/4};
+  return Math.min(1.99, fx.delaySync && fx.delaySync!=='free' ? m[fx.delaySync] : fx.delayTime);
+}
+const ECHO_PRESETS = {
+  'سلاب باك (قصير)':      {delaySync:'free', delayTime:.11, delayFb:.12, delayMix:.25, delayPP:false},
+  'صدى إيقاعي 1/4':       {delaySync:'1/4', delayFb:.35, delayMix:.26, delayPP:false},
+  'صدى 1/8 منقّط':        {delaySync:'1/8.', delayFb:.4, delayMix:.24, delayPP:false},
+  'بينغ بونغ ستيريو':     {delaySync:'1/8', delayFb:.45, delayMix:.3, delayPP:true},
+  'صدى راب (آخر الكلمة)': {delaySync:'1/4', delayFb:.22, delayMix:.16, delayPP:true},
+  'صدى شيلات':            {delaySync:'1/8.', delayFb:.5, delayMix:.3, delayPP:true, revMix:.38, revSize:3.5},
+  'صدى وادي / جبل':       {delaySync:'free', delayTime:.55, delayFb:.55, delayMix:.34, delayPP:false, revMix:.2, revSize:3},
+  'صدى ستاد':             {delaySync:'1/4', delayFb:.5, delayMix:.3, delayPP:true, revMix:.35, revSize:4.5},
+  'بدون صدى':             {delayMix:0},
+};
+
+function buildChain(c, fx){
+  const n = {};
+  const bq = (type, f, q) => { const b = c.createBiquadFilter(); b.type = type; if(f) b.frequency.value = f; if(q) b.Q.value = q; return b; };
+  n.input = c.createGain();
+  n.hp = bq('highpass', 10, .707); n.lp = bq('lowpass', 20000, .707);
+  n.low = bq('lowshelf', 120); n.mid = bq('peaking', 1000, 1.1); n.high = bq('highshelf', 8000);
+  n.geq = GEQ_F.map(f => bq('peaking', f, 1.1));
+  n.drive = c.createWaveShaper(); n.drive.oversample = '4x';
+  n.comp = c.createDynamicsCompressor(); n.comp.attack.value = .004; n.comp.release.value = .2; n.comp.knee.value = 6;
+  n.makeup = c.createGain(); n.dry = c.createGain();
+  // stereo / ping-pong delay
+  n.delay = c.createDelay(2); n.delLp = bq('lowpass', 5000); n.fb = c.createGain();
+  n.delay2 = c.createDelay(2); n.delLp2 = bq('lowpass', 5000); n.cross1 = c.createGain(); n.cross2 = c.createGain();
+  n.merge = c.createChannelMerger(2); n.monoR = c.createGain(); n.ppR = c.createGain(); n.delWet = c.createGain();
+  n.conv = c.createConvolver(); n.revWet = c.createGain();
+  n.vol = c.createGain(); n.pan = c.createStereoPanner ? c.createStereoPanner() : c.createGain(); n.mute = c.createGain();
+  // wiring
+  let last = n.input;
+  [n.hp, n.lp, n.low, n.mid, n.high, ...n.geq, n.drive, n.comp, n.makeup].forEach(x => { last.connect(x); last = x; });
+  n.makeup.connect(n.dry); n.dry.connect(n.vol);
+  n.makeup.connect(n.delay); n.delay.connect(n.delLp); n.delLp.connect(n.fb); n.fb.connect(n.delay);
+  n.delLp.connect(n.merge, 0, 0); n.delLp.connect(n.monoR); n.monoR.connect(n.merge, 0, 1);
+  n.delLp.connect(n.cross1); n.cross1.connect(n.delay2); n.delay2.connect(n.delLp2); n.delLp2.connect(n.ppR); n.ppR.connect(n.merge, 0, 1);
+  n.delLp2.connect(n.cross2); n.cross2.connect(n.delay);
+  n.merge.connect(n.delWet); n.delWet.connect(n.vol);
+  n.makeup.connect(n.conv); n.conv.connect(n.revWet); n.revWet.connect(n.vol);
+  n.vol.connect(n.pan); n.pan.connect(n.mute);
+  n.output = n.mute;
+  applyFx(n, fx, c);
+  return n;
+}
+function applyFx(n, fx, c){
+  const ny = c.sampleRate/2 - 100;
+  n.hp.frequency.value = fx.hpOn ? fx.hp : 10;
+  n.lp.frequency.value = fx.lpOn ? fx.lp : ny;
+  n.low.gain.value = fx.low; n.mid.gain.value = fx.mid; n.mid.frequency.value = fx.midF; n.high.gain.value = fx.high;
+  n.geq.forEach((b,i) => b.gain.value = (fx.geq && fx.geq[i]) || 0);
+  n.drive.curve = fx.drive > 0.001 ? driveCurve(fx.drive) : null;
+  if(fx.compOn){ n.comp.threshold.value = fx.th; n.comp.ratio.value = fx.ratio; n.makeup.gain.value = dbToGain(Math.min(12, -fx.th*(1-1/fx.ratio)*.5)); }
+  else { n.comp.threshold.value = 0; n.comp.ratio.value = 1; n.makeup.gain.value = 1; }
+  n.makeup.gain.value *= fx.drive > 0.001 ? 1/(1+fx.drive*1.5) : 1;
+  const T = delayTimeOf(fx);
+  n.delay.delayTime.value = T; n.delay2.delayTime.value = T;
+  if(fx.delayPP){ n.fb.gain.value = 0; n.cross1.gain.value = 1; n.cross2.gain.value = fx.delayFb; n.monoR.gain.value = 0; n.ppR.gain.value = 1; }
+  else { n.fb.gain.value = fx.delayFb; n.cross1.gain.value = 0; n.cross2.gain.value = 0; n.monoR.gain.value = 1; n.ppR.gain.value = 0; }
+  n.delWet.gain.value = fx.delayMix;
+  n.revWet.gain.value = fx.revMix*1.6;
+  if(fx.revMix > 0.001 && n.irSize !== fx.revSize){ n.conv.buffer = getIR(c.sampleRate, fx.revSize); n.irSize = fx.revSize; }
+}
+
+function setVolPan(n, t, audible){
+  n.vol.gain.value = dbToGain(t.vol);
+  if(n.pan.pan) n.pan.pan.value = t.pan;
+  n.mute.gain.value = audible ? 1 : 0;
+}
+function isAudible(t){ const anySolo = tracks.some(x=>x.solo); return anySolo ? t.solo : !t.mute; }
+
+function buildMaster(c, m, live){
+  const n = {};
+  n.input = c.createGain();
+  n.low = c.createBiquadFilter(); n.low.type='lowshelf'; n.low.frequency.value=100;
+  n.mid = c.createBiquadFilter(); n.mid.type='peaking'; n.mid.frequency.value=1200; n.mid.Q.value=.8;
+  n.high = c.createBiquadFilter(); n.high.type='highshelf'; n.high.frequency.value=9000;
+  n.glue = c.createDynamicsCompressor(); n.glue.attack.value=.02; n.glue.release.value=.25;
+  n.lim = c.createDynamicsCompressor(); n.lim.attack.value=.001; n.lim.release.value=.08; n.lim.knee.value=0;
+  n.vol = c.createGain();
+  n.input.connect(n.low); n.low.connect(n.mid); n.mid.connect(n.high); n.high.connect(n.glue); n.glue.connect(n.lim); n.lim.connect(n.vol);
+  n.output = n.vol;
+  if(live){
+    n.an = c.createAnalyser(); n.an.fftSize=4096; n.an.smoothingTimeConstant=.78;
+    n.split = c.createChannelSplitter(2); n.aL = c.createAnalyser(); n.aR = c.createAnalyser(); n.aL.fftSize=n.aR.fftSize=1024;
+    n.vol.connect(n.an); n.vol.connect(n.split); n.split.connect(n.aL,0); n.split.connect(n.aR,1);
+  }
+  applyMaster(n, m);
+  return n;
+}
+function applyMaster(n, m){
+  n.low.gain.value=m.low; n.mid.gain.value=m.mid; n.high.gain.value=m.high;
+  if(m.glue){ n.glue.threshold.value=-14; n.glue.ratio.value=2; } else { n.glue.threshold.value=0; n.glue.ratio.value=1; }
+  if(m.limiter){ n.lim.threshold.value=-1.5; n.lim.ratio.value=20; } else { n.lim.threshold.value=0; n.lim.ratio.value=1; }
+  n.vol.gain.value = dbToGain(m.vol);
+}
+
+function attachTrackNodes(t){
+  if(!ctx) return;
+  t.n = buildChain(ctx, t.fx);
+  t.n.meter = ctx.createAnalyser(); t.n.meter.fftSize = 512;
+  t.n.output.connect(t.n.meter);
+  t.n.output.connect(M.input);
+  setVolPan(t.n, t, isAudible(t));
+}
+function refreshMix(){ tracks.forEach(t => { if(t.n) setVolPan(t.n, t, isAudible(t)); }); }
+
+/* =========================================================
+   TRACKS & CLIPS
+   ========================================================= */
+function addTrack(name){
+  const i = tracks.length;
+  const t = { id:uid++, name: name || ('مسار '+(i+1)), color: COLORS[i%COLORS.length], vol:0, pan:0,
+              mute:false, solo:false, arm:false, fx:defFx(), preset:'نظيف (بدون مؤثرات)', clips:[], kind:'audio', at:defAT() };
+  tracks.push(t);
+  if(ctx) attachTrackNodes(t);
+  S.sel = t;
+  renderTracks(); renderPanel();
+  return t;
+}
+function removeTrack(t){
+  if(S.recording) return toast('أوقف التسجيل أولاً');
+  pushUndo();
+  if(t.n){ try{ t.n.output.disconnect(); }catch(e){} }
+  tracks = tracks.filter(x=>x!==t);
+  if(S.sel===t) S.sel = tracks[0]||null;
+  if(S.selClip && S.selClip.track===t) S.selClip=null;
+  updateMonitorRoute();
+  renderTracks(); renderPanel();
+}
+function addClip(t, buffer, start, name){
+  const c = { id:uid++, buffer, start:Math.max(0,start), offset:0, duration:buffer.duration, gain:1, name:name||'مقطع' };
+  t.clips.push(c);
+  return c;
+}
+function firstEmpty(){ return tracks.find(t => t.clips.length===0) || null; }
+function projectEnd(){
+  let e = 0;
+  tracks.forEach(t => t.clips.forEach(c => e = Math.max(e, c.start + c.duration)));
+  return e;
+}
+function pushUndo(){
+  undoStack.push(tracks.map(t => ({t, clips:t.clips.map(c=>({...c}))})));
+  if(undoStack.length>60) undoStack.shift();
+}
+function undo(){
+  const snap = undoStack.pop(); if(!snap) return toast('لا يوجد ما يمكن التراجع عنه');
+  snap.forEach(s => { if(!tracks.includes(s.t)){ tracks.push(s.t); if(ctx) attachTrackNodes(s.t); } s.t.clips = s.clips; });
+  S.selClip = null; renderTracks(); renderPanel(); toast('تم التراجع');
+}
+
+/* =========================================================
+   TRANSPORT
+   ========================================================= */
+function curPos(){ return S.playing ? startPos + (ctx.currentTime - startCtxTime) : S.playhead; }
+
+function stopSources(){
+  sources.forEach(s => { try{ s.stop(); }catch(e){} try{ s.disconnect(); }catch(e){} });
+  sources = [];
+}
+function play(from){
+  ensureCtx(); stopSources();
+  startPos = from ?? S.playhead;
+  startCtxTime = ctx.currentTime + 0.06;
+  tracks.forEach(t => t.clips.forEach(c => {
+    const end = c.start + c.duration;
+    if(end <= startPos) return;
+    const skip = Math.max(0, startPos - c.start);
+    const when = startCtxTime + Math.max(0, c.start - startPos);
+    const src = ctx.createBufferSource(); src.buffer = c.buffer;
+    const g = ctx.createGain(); g.gain.value = c.gain;
+    src.connect(g); g.connect(t.n.input);
+    src.start(when, c.offset + skip, c.duration - skip);
+    sources.push(src);
+  }));
+  S.playing = true;
+  metroNext = Math.ceil((startPos - 1e-6) / (60/S.bpm)) * (60/S.bpm);
+  setPlayUI();
+}
+function pause(){
+  if(P.rec) finishPianoRec();
+  if(S.recording) finishRecording();
+  if(S.playing){ S.playhead = Math.max(0, curPos()); }
+  stopSources(); S.playing = false; setPlayUI();
+}
+function stopT(){
+  const wasPlaying = S.playing;
+  pause();
+  if(wasPlaying) S.playhead = S.returnPos; else S.playhead = 0;
+  updatePlayhead(true);
+}
+function togglePlay(){
+  ensureCtx();
+  if(S.playing) pause();
+  else { S.returnPos = S.playhead; play(); }
+}
+function seek(t){
+  t = Math.max(0, t);
+  if(S.playing && !S.recording){ play(t); } else { S.playhead = t; }
+  updatePlayhead(true);
+}
+function setPlayUI(){
+  $('#bPlay').classList.toggle('on', S.playing);
+  $('#playIco').innerHTML = S.playing ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>' : '<path d="M7 5v14l12-7z"/>';
+  $('#bRec').classList.toggle('on', S.recording);
+  const dot = $('#sDot'), anyRec = S.recording || !!P.rec;
+  dot.className = 'dot' + (anyRec ? ' rec' : S.playing ? ' play' : '');
+  $('#sTxt').textContent = P.rec ? 'تسجيل البيانو' : S.recording ? 'جاري التسجيل' : S.playing ? 'تشغيل' : 'جاهز';
+  updatePianoRecBtn();
+  if(!S.playing && !anyRec) $('#sSub').textContent = 'اضغط تشغيل أو تسجيل للبدء';
+}
+
+/* metronome scheduler */
+let metroNext = 0, countInEnd = -Infinity;
+function click(time, accent){
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'square'; o.frequency.value = accent ? 1760 : 1100;
+  g.gain.setValueAtTime(0.0001, time);
+  g.gain.exponentialRampToValueAtTime(accent ? .35 : .22, time + .002);
+  g.gain.exponentialRampToValueAtTime(0.0001, time + .05);
+  o.connect(g); g.connect(ctx.destination); o.start(time); o.stop(time + .06);
+}
+function startSchedulers(){
+  setInterval(() => {
+    if(!ctx || !S.playing) return;
+    const beat = 60/S.bpm, ahead = ctx.currentTime + .12;
+    let guard = 0;
+    while(guard++ < 16){
+      const t = startCtxTime + (metroNext - startPos);
+      if(t > ahead) break;
+      const idx = Math.round(metroNext / beat);
+      if(t >= ctx.currentTime - .01 && (S.metro || metroNext < countInEnd - 1e-6)) click(t, ((idx % S.sig) + S.sig) % S.sig === 0);
+      metroNext += beat;
+    }
+  }, 25);
+}
+
+/* =========================================================
+   RECORDING
+   ========================================================= */
+let mic = null, micSrc, inGain, inAn, proc, sink, monGain, rec = null;
+
+async function initMic(force){
+  ensureCtx();
+  if(mic && !force) return true;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    micBlockedHelp(); return false;
+  }
+  if(mic){ mic.getTracks().forEach(t=>t.stop()); try{ micSrc.disconnect(); }catch(e){} }
+  try{
+    mic = await navigator.mediaDevices.getUserMedia({audio:{
+      deviceId: S.deviceId ? {exact:S.deviceId} : undefined,
+      echoCancellation:S.ec, noiseSuppression:S.ns, autoGainControl:false, channelCount:1 }});
+  }catch(e){
+    mic = null;
+    $('#micState').textContent='المايك غير متاح هنا'; micBlockedHelp(); return false;
+  }
+  micSrc = ctx.createMediaStreamSource(mic);
+  if(!inGain){
+    inGain = ctx.createGain(); inAn = ctx.createAnalyser(); inAn.fftSize = 1024;
+    proc = ctx.createScriptProcessor(1024, 1, 1); sink = ctx.createGain(); sink.gain.value = 0;
+    monGain = ctx.createGain(); monGain.gain.value = 0;
+    inGain.connect(inAn); inGain.connect(proc); proc.connect(sink); sink.connect(ctx.destination);
+    inGain.connect(monGain);
+    proc.onaudioprocess = e => {
+      if(!rec || !rec.active) return;
+      if(rec.firstTime === null) rec.firstTime = ctx.currentTime - proc.bufferSize/ctx.sampleRate;
+      rec.chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+    };
+  }
+  inGain.gain.value = dbToGain(S.inGainDb);
+  micSrc.connect(inGain);
+  updateMonitorRoute();
+  const tr = mic.getAudioTracks()[0];
+  $('#micState').textContent = '✔ ' + (tr.label || 'ميكروفون');
+  listDevices();
+  return true;
+}
+async function listDevices(){
+  try{
+    const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='audioinput');
+    const sel = $('#devSel'); if(!sel) return;
+    sel.innerHTML = devs.map(d=>`<option value="${d.deviceId}">${d.label||'ميكروفون'}</option>`).join('');
+    if(S.deviceId) sel.value = S.deviceId;
+  }catch(e){}
+}
+function updateMonitorRoute(){
+  if(!monGain) return;
+  try{ monGain.disconnect(); }catch(e){}
+  const target = tracks.find(t=>t.arm) || S.sel;
+  monGain.connect(S.monitorFx && target && target.n ? target.n.input : M.input);
+  monGain.gain.value = S.monitor ? 1 : 0;
+}
+async function record(){
+  ensureCtx();
+  if(S.recording){ pause(); return; }
+  if(!await initMic()) return;
+  let t = tracks.find(x=>x.arm);
+  if(!t){
+    t = (S.sel && !S.sel.clips.length && S.sel.kind!=='piano') ? S.sel
+      : (tracks.find(x=>!x.clips.length && ['الصوت الرئيسي','أدليبز','تسجيل إضافي','مؤثرات'].includes(x.name)) || tracks.find(x=>!x.clips.length && x.kind!=='piano' && x.name!==BEAT_NAME) || addTrack('تسجيل '+(S.recCount+1)));
+    t.arm = true;
+  }
+  S.sel = t; updateMonitorRoute(); renderTracks(); renderPanel();
+  const recPos = S.playhead;
+  const ci = S.countIn ? (60/S.bpm)*S.sig : 0;
+  stopSources(); S.playing = false;
+  rec = { track:t, pos:recPos, active:true, chunks:[], firstTime:null };
+  S.recording = true; S.returnPos = recPos;
+  countInEnd = recPos;
+  play(recPos - ci);
+  rec.posCtx = startCtxTime + ci;
+  setPlayUI();
+}
+function finishRecording(){
+  if(!rec) return;
+  rec.active = false; S.recording = false; countInEnd = -Infinity;
+  const r = rec; rec = null;
+  removeRecClip();
+  const total = r.chunks.reduce((a,c)=>a+c.length,0);
+  if(!total || r.firstTime===null){ setPlayUI(); return; }
+  const data = new Float32Array(total); let o = 0;
+  r.chunks.forEach(c => { data.set(c,o); o += c.length; });
+  const sr = ctx.sampleRate;
+  const autoLat = (ctx.outputLatency||0) + (ctx.baseLatency||0);
+  const lat = autoLat + S.latExtraMs/1000;
+  let startIdx = Math.round((r.posCtx - r.firstTime + lat) * sr);
+  let clipStart = r.pos;
+  if(startIdx < 0){ clipStart = r.pos + (-startIdx)/sr; startIdx = 0; }
+  const len = total - startIdx;
+  if(len < sr*0.1){ toast('التسجيل قصير جداً'); setPlayUI(); return; }
+  const buf = new AudioBuffer({numberOfChannels:1, length:len, sampleRate:sr});
+  buf.copyToChannel(data.subarray(startIdx), 0);
+  pushUndo();
+  S.recCount++;
+  const c = addClip(r.track, buf, clipStart, 'تسجيل '+S.recCount);
+  S.selClip = {track:r.track, clip:c};
+  renderTracks(); renderPanel(); setPlayUI();
+  if(r.track.at.on && (r.track.at.tune!==false || r.track.at.shift)) applyAutotune(r.track, [c], true);
+  else toast('✔ تم حفظ التسجيل ('+fmtTime(buf.duration)+')');
+}
+let recEl = null;
+function updateRecClip(){
+  if(!S.recording || !rec) return;
+  const pos = curPos();
+  const lane = document.querySelector(`.lane[data-id="${rec.track.id}"]`);
+  if(!lane) return;
+  if(!recEl || recEl.parentNode !== lane){ recEl = document.createElement('div'); recEl.className='recclip'; recEl.innerHTML='<span>● REC</span>'; lane.appendChild(recEl); }
+  recEl.style.left = (rec.pos*S.pps)+'px';
+  recEl.style.width = Math.max(0,(pos-rec.pos)*S.pps)+'px';
+  if(pos < rec.pos){ const n = Math.ceil(rec.pos-pos); $('#sSub').textContent = 'العدّ: '+n+' …'; recEl.querySelector('span').textContent = '● '+n; }
+  else { $('#sSub').textContent = 'مدة التسجيل: '+fmtTime(pos-rec.pos); recEl.querySelector('span').textContent='● REC'; }
+}
+function removeRecClip(){ if(recEl){ recEl.remove(); recEl=null; } }
+
+/* =========================================================
+   IMPORT / DEMO / EXPORT
+   ========================================================= */
+async function importFiles(files, targetTrack, atPos){
+  ensureCtx();
+  const list = [...files].filter(f => f.type.startsWith('audio') || f.type.startsWith('video') || /\.(mp3|wav|m4a|ogg|flac|aac|webm|mov|mp4|caf|zip)$/i.test(f.name));
+  if(!list.length) return toast('اختر ملفات صوتية');
+  showModal('جاري تحميل الملفات…');
+  pushUndo();
+  for(const f of list){
+    try{
+      let ab = await f.arrayBuffer();
+      const inner = unzipOne(ab); if(inner) ab = inner;
+      const buf = await ctx.decodeAudioData(ab);
+      let t = targetTrack;
+      if(!t) t = beatTarget(f.name.replace(/\.[^.]+$/,'').slice(0,24)) || addTrack(f.name.replace(/\.[^.]+$/,'').slice(0,24));
+      if(false) t.name = f.name.replace(/\.[^.]+$/,'').slice(0,24);
+      addClip(t, buf, atPos ?? S.playhead, f.name.replace(/\.[^.]+$/,''));
+      targetTrack = null;
+    }catch(e){ toast('تعذّر قراءة الملف: '+f.name); }
+  }
+  hideModal(); renderTracks(); renderPanel();
+}
+
+async function exportMix(){
+  ensureCtx();
+  const end = projectEnd();
+  if(end <= 0) return toast('لا يوجد صوت لتصديره بعد');
+  if(S.playing) pause();
+  const useLoop = S.loop && S.loopEnd > S.loopStart;
+  const from = useLoop ? S.loopStart : 0, to = useLoop ? S.loopEnd : end + 1.5;
+  showModal('جاري تصدير المزيج النهائي…');
+  const sr = ctx.sampleRate;
+  const off = new OfflineAudioContext(2, Math.ceil((to-from)*sr), sr);
+  const m = buildMaster(off, S.mfx, false); m.output.connect(off.destination);
+  tracks.forEach(t => {
+    if(!isAudible(t)) return;
+    const n = buildChain(off, t.fx); setVolPan(n, t, true); n.output.connect(m.input);
+    t.clips.forEach(c => {
+      const cEnd = c.start + c.duration; if(cEnd <= from || c.start >= to) return;
+      const skip = Math.max(0, from - c.start);
+      const src = off.createBufferSource(); src.buffer = c.buffer;
+      const g = off.createGain(); g.gain.value = c.gain; src.connect(g); g.connect(n.input);
+      src.start(Math.max(0, c.start - from), c.offset + skip, c.duration - skip);
+    });
+  });
+  const out = await off.startRendering();
+  const blob = toWav(out);
+  hideModal();
+  download(blob, 'صدى-برو-مكس-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.wav');
+  toast('✔ تم تصدير الملف'+(useLoop?' (منطقة التكرار فقط)':''));
+}
+function toWav(buf){ return new Blob([toWavRaw(buf)], {type:'audio/wav'}); }
+function toWavRaw(buf){
+  const ch = buf.numberOfChannels, len = buf.length, sr = buf.sampleRate;
+  const ab = new ArrayBuffer(44 + len*ch*2), v = new DataView(ab);
+  const w = (o,s) => { for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  w(0,'RIFF'); v.setUint32(4,36+len*ch*2,true); w(8,'WAVE'); w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true);
+  v.setUint16(22,ch,true); v.setUint32(24,sr,true); v.setUint32(28,sr*ch*2,true); v.setUint16(32,ch*2,true); v.setUint16(34,16,true);
+  w(36,'data'); v.setUint32(40,len*ch*2,true);
+  const data = []; for(let c=0;c<ch;c++) data.push(buf.getChannelData(c));
+  let o = 44;
+  for(let i=0;i<len;i++) for(let c=0;c<ch;c++){ let s = Math.max(-1, Math.min(1, data[c][i])); v.setInt16(o, s<0 ? s*0x8000 : s*0x7fff, true); o+=2; }
+  return ab;
+}
+/* downloads: inside claude.ai use the platform capability (wav/sadapro are wrapped in .zip) */
+let DL = null;
+try{ if(window.claude && window.claude.use) window.claude.use('downloads').then(d => { DL = d; }).catch(()=>{}); }catch(e){}
+const CRC_T = (() => { const t = new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
+function crc32(u){ let c = 0xFFFFFFFF; for(let i=0;i<u.length;i++) c = CRC_T[(c^u[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+async function zipOne(name, blob){
+  const data = new Uint8Array(await blob.arrayBuffer()), fn = new TextEncoder().encode(name), crc = crc32(data);
+  const lh = new DataView(new ArrayBuffer(30)); lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true);
+  lh.setUint32(14,crc,true); lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,fn.length,true);
+  const cd = new DataView(new ArrayBuffer(46)); cd.setUint32(0,0x02014b50,true); cd.setUint16(4,20,true); cd.setUint16(6,20,true); cd.setUint16(8,0x0800,true);
+  cd.setUint32(16,crc,true); cd.setUint32(20,data.length,true); cd.setUint32(24,data.length,true); cd.setUint16(28,fn.length,true);
+  const cdOff = 30+fn.length+data.length, cdLen = 46+fn.length;
+  const end = new DataView(new ArrayBuffer(22)); end.setUint32(0,0x06054b50,true); end.setUint16(8,1,true); end.setUint16(10,1,true); end.setUint32(12,cdLen,true); end.setUint32(16,cdOff,true);
+  return new Blob([lh.buffer, fn, data, cd.buffer, fn, end.buffer]);
+}
+function unzipOne(ab){
+  const dv = new DataView(ab); if(dv.getUint32(0,true)!==0x04034b50) return null;
+  const method = dv.getUint16(8,true), size = dv.getUint32(18,true), nl = dv.getUint16(26,true), xl = dv.getUint16(28,true);
+  if(method!==0) return null;
+  return ab.slice(30+nl+xl, 30+nl+xl+size);
+}
+async function download(blob, name){
+  if(DL){
+    try{
+      const ok = /\.(gif|png|jpg|jpeg|webp|mp4|webm|mov|txt|json|md|csv|html|svg|pdf|zip)$/i.test(name);
+      const out = ok ? blob : await zipOne(name, blob);
+      await DL.save({filename: ok ? name : name+'.zip', data: out});
+      return;
+    }catch(e){ if(e && e.code==='declined') return; if(e && e.code==='rate_limited'){ toast('انتظر لحظة وحاول مرة ثانية'); return; } }
+  }
+  downloadLink(blob, name);
+}
+function downloadLink(blob, name){
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 20000);
+}
+
+/* =========================================================
+   CLIP OPERATIONS
+   ========================================================= */
+function selClipObj(){ return S.selClip && S.selClip.track.clips.includes(S.selClip.clip) ? S.selClip : null; }
+function sliceBuffer(c){
+  const sr = c.buffer.sampleRate, s0 = Math.round(c.offset*sr), n = Math.max(1, Math.round(c.duration*sr));
+  const b = new AudioBuffer({numberOfChannels:c.buffer.numberOfChannels, length:n, sampleRate:sr});
+  for(let ch=0; ch<b.numberOfChannels; ch++) b.copyToChannel(c.buffer.getChannelData(ch).subarray(s0, s0+n), ch);
+  return b;
+}
+const clipOps = {
+  split(){ const s = selClipObj(); if(!s) return toast('حدد مقطعاً أولاً'); const {track,clip} = s; const p = S.playing?curPos():S.playhead;
+    if(p <= clip.start+.01 || p >= clip.start+clip.duration-.01) return toast('ضع مؤشر التشغيل داخل المقطع للقص');
+    pushUndo(); const d1 = p - clip.start;
+    const c2 = {...clip, id:uid++, start:p, offset:clip.offset+d1, duration:clip.duration-d1, name:clip.name+' (2)'};
+    clip.duration = d1; clip.raw = null; c2.raw = null; track.clips.push(c2); S.selClip = {track, clip:c2}; renderTracks(); renderPanel(); },
+  dup(){ const s = selClipObj(); if(!s) return toast('حدد مقطعاً أولاً'); pushUndo();
+    const c2 = {...s.clip, id:uid++, start:s.clip.start+s.clip.duration}; s.track.clips.push(c2); S.selClip={track:s.track,clip:c2}; renderTracks(); renderPanel(); },
+  del(){ const s = selClipObj(); if(!s) return; pushUndo(); s.track.clips = s.track.clips.filter(c=>c!==s.clip); S.selClip=null; renderTracks(); renderPanel(); },
+  normalize(){ const s = selClipObj(); if(!s) return toast('حدد مقطعاً أولاً'); const c = s.clip, sr=c.buffer.sampleRate;
+    let pk = 0; for(let ch=0; ch<c.buffer.numberOfChannels; ch++){ const d=c.buffer.getChannelData(ch), a=Math.round(c.offset*sr), b=a+Math.round(c.duration*sr); for(let i=a;i<b;i++){ const v=Math.abs(d[i]); if(v>pk) pk=v; } }
+    if(pk<1e-5) return; pushUndo(); c.gain = 0.95/pk; renderTracks(); renderPanel(); toast('تم التطبيع إلى ‎-0.4 dB'); },
+  reverse(){ const s = selClipObj(); if(!s) return; pushUndo(); const b = sliceBuffer(s.clip);
+    for(let ch=0; ch<b.numberOfChannels; ch++) b.getChannelData(ch).reverse();
+    s.clip.buffer=b; s.clip.offset=0; renderTracks(); renderPanel(); },
+  fade(dir){ const s = selClipObj(); if(!s) return; pushUndo(); const b = sliceBuffer(s.clip); const sr=b.sampleRate, n=Math.min(b.length, Math.round(Math.min(1.5, s.clip.duration/3)*sr));
+    for(let ch=0; ch<b.numberOfChannels; ch++){ const d=b.getChannelData(ch); for(let i=0;i<n;i++){ const g = Math.sin(i/n*Math.PI/2)**2; if(dir==='in') d[i]*=g; else d[b.length-1-i]*=g; } }
+    s.clip.buffer=b; s.clip.offset=0; renderTracks(); renderPanel(); },
+  exportClip(){ const s = selClipObj(); if(!s) return; const b = sliceBuffer(s.clip);
+    if(s.clip.gain!==1) for(let ch=0;ch<b.numberOfChannels;ch++){ const d=b.getChannelData(ch); for(let i=0;i<d.length;i++) d[i]*=s.clip.gain; }
+    download(toWav(b), s.clip.name+'.wav'); }
+};
+
+/* =========================================================
+   RENDERING — timeline
+   ========================================================= */
+const scrollEl = $('#scroll'), contentEl = $('#content'), rowsEl = $('#rows');
+function timelineSec(){ return Math.max(90, projectEnd() + 40, S.loopEnd + 10); }
+function layoutWidth(){
+  const w = timelineSec() * S.pps;
+  contentEl.style.width = (HEAD + w) + 'px';
+  $('#ruler').style.width = w + 'px';
+  const beat = 60/S.bpm*S.pps;
+  contentEl.style.setProperty('--beat', beat+'px');
+  contentEl.style.setProperty('--bar', (beat*S.sig)+'px');
+  rowsEl.querySelectorAll('.lane').forEach(l => l.style.width = w+'px');
+  drawRuler(); updateLoopZone(); updatePlayhead();
+}
+function renderTracks(){
+  rowsEl.innerHTML = '';
+  if(!tracks.length){
+    rowsEl.innerHTML = '<div class="empty" style="position:sticky;left:0;width:min(100%,900px)"><b>لا توجد مسارات بعد</b>أضف مساراً، أو استورد لحنك (MP3 / WAV)، أو اضغط تسجيل مباشرة.</div>';
+  }
+  tracks.forEach(t => {
+    const row = document.createElement('div'); row.className = 'row'; row.style.height = 'var(--rowh)';
+    const h = document.createElement('div'); h.className = 'thead' + (S.sel===t?' sel':'');
+    h.innerHTML = `<div class="strip" style="background:${t.color}"></div>
+      <div class="r1">${t.kind==='piano'?'<span title="مسار بيانو">🎹</span>':''}${t.at.on?'<span class="badge" title="أوتوتون تلقائي مفعّل">AT</span>':''}<input class="name" value="${escapeHtml(t.name)}">
+        <button class="mini m ${t.mute?'on':''}" title="كتم">M</button>
+        <button class="mini s ${t.solo?'on':''}" title="سولو">S</button>
+        <button class="mini r ${t.arm?'on':''}" title="تجهيز للتسجيل">●</button>
+        <button class="mini x" title="حذف المسار">✕</button></div>
+      <div class="r2"><span>صوت</span><input type="range" class="vol" min="-60" max="6" step="0.5" value="${t.vol}"><span class="val vv">${t.vol.toFixed(1)} dB</span></div>
+      <div class="r2"><span>توزيع</span><input type="range" class="pan" min="-1" max="1" step="0.05" value="${t.pan}"><span class="val pv">${panTxt(t.pan)}</span></div>
+      <div class="tmeter"><i></i></div>`;
+    h.addEventListener('pointerdown', e => { if(S.sel!==t){ S.sel=t; markSel(); renderPanel(); updateMonitorRoute(); } });
+    const q = s => h.querySelector(s);
+    q('.name').addEventListener('change', e => { t.name = e.target.value || t.name; renderPanel(); });
+    q('.name').addEventListener('keydown', stopKeys);
+    q('.m').onclick = () => { t.mute=!t.mute; q('.m').classList.toggle('on',t.mute); refreshMix(); };
+    q('.s').onclick = () => { t.solo=!t.solo; q('.s').classList.toggle('on',t.solo); refreshMix(); };
+    q('.r').onclick = () => { if(S.recording) return; tracks.forEach(x=>x.arm = (x===t ? !t.arm : false)); renderTracks(); updateMonitorRoute(); };
+    q('.x').onclick = () => removeTrack(t);
+    q('.vol').oninput = e => { t.vol=+e.target.value; q('.vv').textContent=t.vol.toFixed(1)+' dB'; if(t.n) setVolPan(t.n,t,isAudible(t)); };
+    q('.vol').ondblclick = e => { t.vol=0; e.target.value=0; e.target.oninput({target:e.target}); };
+    q('.pan').oninput = e => { t.pan=+e.target.value; q('.pv').textContent=panTxt(t.pan); if(t.n) setVolPan(t.n,t,isAudible(t)); };
+    q('.pan').ondblclick = e => { t.pan=0; e.target.value=0; e.target.oninput({target:e.target}); };
+    t.meterEl = q('.tmeter i');
+    const lane = document.createElement('div'); lane.className = 'lane' + (S.sel===t?' sel':''); lane.dataset.id = t.id;
+    lane.addEventListener('click', e => {
+      if(e.target !== lane) return;
+      S.sel = t; S.selClip = null; markSel(); renderPanel(); updateMonitorRoute();
+      if(!S.recording) seek((e.offsetX)/S.pps);
+    });
+    lane.addEventListener('dragover', e => { e.preventDefault(); lane.classList.add('drop'); });
+    lane.addEventListener('dragleave', () => lane.classList.remove('drop'));
+    lane.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); lane.classList.remove('drop');
+      const x = e.clientX - lane.getBoundingClientRect().left; importFiles(e.dataTransfer.files, t, snapT(x/S.pps)); });
+    t.clips.forEach(c => lane.appendChild(clipEl(t, c)));
+    row.appendChild(h); row.appendChild(lane); rowsEl.appendChild(row);
+  });
+  layoutWidth(); updateStats();
+}
+function markSel(){
+  rowsEl.querySelectorAll('.thead').forEach((h,i)=>h.classList.toggle('sel', tracks[i]===S.sel));
+  rowsEl.querySelectorAll('.lane').forEach((l,i)=>l.classList.toggle('sel', tracks[i]===S.sel));
+  rowsEl.querySelectorAll('.clip').forEach(el=>el.classList.toggle('sel', !!S.selClip && +el.dataset.id===S.selClip.clip.id));
+}
+function clipEl(t, c){
+  const el = document.createElement('div'); el.className = 'clip' + (S.selClip && S.selClip.clip===c ? ' sel':''); el.dataset.id = c.id;
+  const w = Math.max(2, c.duration*S.pps);
+  el.style.left = (c.start*S.pps)+'px'; el.style.width = w+'px';
+  el.style.background = hexA(t.color,.22); el.style.borderColor = hexA(t.color,.7);
+  el.innerHTML = `<div class="cn">${c.tuned?'<span class="badge">AUTO-TUNE</span> ':''}${escapeHtml(c.name)}${c.gain!==1?' · '+(20*Math.log10(c.gain)).toFixed(1)+'dB':''}</div>`;
+  const cv = document.createElement('canvas'); el.appendChild(cv);
+  requestAnimationFrame(() => drawWave(cv, c, w, t.color));
+  el.addEventListener('pointerdown', e => {
+    e.stopPropagation(); if(e.button!==0) return;
+    S.sel = t; S.selClip = {track:t, clip:c}; markSel(); renderPanel();
+    const x0 = e.clientX, s0 = c.start; let moved = false;
+    el.style.cursor = 'grabbing';
+    const mv = ev => { const dx = ev.clientX - x0; if(!moved && Math.abs(dx)<3) return; if(!moved){ pushUndo(); moved = true; }
+      c.start = Math.max(0, snapT(s0 + dx/S.pps, true)); el.style.left = (c.start*S.pps)+'px'; };
+    const up = () => { el.style.cursor=''; window.removeEventListener('pointermove',mv); window.removeEventListener('pointerup',up); window.removeEventListener('pointercancel',up); if(moved){ layoutWidth(); updateStats(); } };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  });
+  return el;
+}
+function drawWave(cv, c, w, color){
+  const H = cv.parentNode ? cv.parentNode.clientHeight - 16 : 76;
+  const W = Math.min(Math.ceil(w), 30000), dpr = Math.min(2, window.devicePixelRatio||1);
+  cv.width = Math.min(W*dpr, 32000); cv.height = H*dpr; cv.style.width = W+'px'; cv.style.height = H+'px';
+  const g = cv.getContext('2d'); g.scale(cv.width/W, dpr);
+  const b = c.buffer, sr = b.sampleRate, d0 = b.getChannelData(0), d1 = b.numberOfChannels>1 ? b.getChannelData(1) : null;
+  const s0 = Math.floor(c.offset*sr), total = Math.floor(c.duration*sr), spp = total / W;
+  const mid = H/2, amp = (H/2-2) * Math.min(4, c.gain);
+  g.fillStyle = color; g.globalAlpha = .9;
+  const step = Math.max(1, Math.floor(spp/64));
+  for(let x=0; x<W; x++){
+    const a = s0 + Math.floor(x*spp), e = Math.min(s0 + Math.floor((x+1)*spp), s0+total);
+    let mn = 1, mx = -1;
+    for(let i=a; i<Math.max(e,a+1); i+=step){ let v = d0[i]||0; if(d1) v = (v + (d1[i]||0))/2; if(v<mn) mn=v; if(v>mx) mx=v; }
+    if(mx<mn){ mn=0; mx=0; }
+    const y1 = mid - Math.min(1,mx)*amp, y2 = mid - Math.max(-1,mn)*amp;
+    g.fillRect(x, y1, 1, Math.max(1, y2-y1));
+  }
+  g.globalAlpha = .25; g.fillRect(0, mid, W, 1);
+}
+function snapT(t, clipMove){
+  if(!S.snap) return t;
+  const beat = 60/S.bpm, grid = S.pps*beat < 18 ? beat*S.sig : (S.pps*beat > 120 ? beat/4 : beat);
+  return Math.round(t/grid)*grid;
+}
+
+/* ruler */
+const rulerCv = $('#cRuler');
+function drawRuler(){
+  const vw = Math.max(100, scrollEl.clientWidth - HEAD), sl = scrollEl.scrollLeft, dpr = window.devicePixelRatio||1;
+  rulerCv.style.left = sl + 'px'; rulerCv.style.width = vw+'px';
+  rulerCv.width = vw*dpr; rulerCv.height = 30*dpr;
+  const g = rulerCv.getContext('2d'); g.scale(dpr,dpr);
+  g.fillStyle = '#14171c'; g.fillRect(0,0,vw,30);
+  const t0 = sl/S.pps, t1 = (sl+vw)/S.pps, beat = 60/S.bpm, bar = beat*S.sig;
+  if(S.loop){ g.fillStyle='rgba(77,163,255,.35)'; g.fillRect(S.loopStart*S.pps - sl, 0, (S.loopEnd-S.loopStart)*S.pps, 30); }
+  // bars
+  const barPx = bar*S.pps; let every = 1; while(barPx*every < 46) every *= 2;
+  g.font = '600 10px JetBrains Mono, monospace'; g.textBaseline='top';
+  for(let b = Math.floor(t0/bar); b*bar <= t1; b++){
+    const x = b*bar*S.pps - sl;
+    if(b % every === 0){ g.fillStyle='#4a5262'; g.fillRect(x,12,1,18); g.fillStyle='#9aa3b2'; g.fillText(String(b+1), x+3, 2); }
+    if(beat*S.pps > 10) for(let k=1;k<S.sig;k++){ g.fillStyle='#2f3542'; g.fillRect(x+k*beat*S.pps, 22, 1, 8); }
+  }
+  // seconds (bottom)
+  let sec = 1; while(sec*S.pps < 70) sec *= 2;
+  g.fillStyle='#6b7383'; g.font='500 9px JetBrains Mono, monospace';
+  for(let s = Math.floor(t0/sec)*sec; s<=t1; s+=sec){ const x = s*S.pps - sl; g.fillText(fmtShort(s), x+3, 17); }
+  g.fillStyle='#363d4a'; g.fillRect(0,29,vw,1);
+}
+function updateLoopZone(){
+  const z = $('#loopzone'); z.style.display = S.loop ? 'block' : 'none';
+  z.style.left = (HEAD + S.loopStart*S.pps)+'px'; z.style.width = ((S.loopEnd-S.loopStart)*S.pps)+'px';
+}
+function updatePlayhead(scrollInto){
+  const p = Math.max(0, curPosSafe());
+  const x = HEAD + p*S.pps;
+  $('#playhead').style.left = x+'px';
+  if(scrollInto || S.playing){
+    const vl = scrollEl.scrollLeft, vw = scrollEl.clientWidth;
+    if(x > vl + vw - 60 || x < vl + HEAD) scrollEl.scrollLeft = Math.max(0, x - HEAD - 80);
+  }
+  $('#clock').textContent = fmtTime(p);
+  const beat = 60/S.bpm, b = Math.floor(p/beat);
+  $('#bars').textContent = 'Bar '+(Math.floor(b/S.sig)+1)+' · Beat '+((b%S.sig)+1);
+}
+function curPosSafe(){ return ctx ? curPos() : S.playhead; }
+
+/* ruler interaction */
+$('#ruler').addEventListener('pointerdown', e => {
+  const r = $('#ruler').getBoundingClientRect(); const x0 = e.clientX; const t0 = (e.clientX - r.left)/S.pps; let drag = false;
+  const mv = ev => { const t1 = (ev.clientX - r.left)/S.pps;
+    if(!drag && Math.abs(ev.clientX-x0) > 5){ drag = true; S.loop = true; $('#bLoop').classList.add('on'); }
+    if(drag){ S.loopStart = Math.max(0, snapT(Math.min(t0,t1))); S.loopEnd = Math.max(S.loopStart+.1, snapT(Math.max(t0,t1))); drawRuler(); updateLoopZone(); } };
+  const up = ev => { window.removeEventListener('pointermove',mv); window.removeEventListener('pointerup',up);
+    if(!drag) seek(t0); else toast('منطقة التكرار: '+fmtTime(S.loopStart)+' ← '+fmtTime(S.loopEnd)); };
+  window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+});
+scrollEl.addEventListener('scroll', drawRuler);
+window.addEventListener('resize', () => { drawRuler(); setupCanvases(); });
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+function ctl(label, key, min, max, step, fmt, obj, onchange){
+  const id = 'c'+Math.random().toString(36).slice(2,8);
+  return { html:`<div class="ctl"><span>${label}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${obj[key]}"><span class="v" id="${id}v">${fmt(obj[key])}</span></div>`,
+    bind(){ const el = document.getElementById(id); el.oninput = () => { obj[key] = +el.value; document.getElementById(id+'v').textContent = fmt(obj[key]); onchange(); }; } };
+}
+const fDb = v => (v>0?'+':'')+(+v).toFixed(1)+' dB', fHz = v => v>=1000 ? (v/1000).toFixed(1)+' kHz' : Math.round(v)+' Hz',
+      fPct = v => Math.round(v*100)+'%', fS = v => (+v).toFixed(2)+' s', fR = v => (+v).toFixed(1)+':1';
+function renderPanel(){ renderFx(); renderMaster(); renderClipPane(); renderSettings(); updateStats(); const tt = document.getElementById('aiT'); if(tt) tt.textContent = S.sel ? S.sel.name : '—'; }
+
+function renderFx(){
+  const p = $('#pFx'), t = S.sel;
+  if(!t){ p.innerHTML = '<div class="note">اختر مساراً لعرض مؤثراته.</div>'; return; }
+  const fx = t.fx, apply = () => { if(t.n) applyFx(t.n, fx, ctx); t.preset = 'مخصص'; const ps = $('#presetSel'); if(ps) ps.value='مخصص'; };
+  const C = [];
+  const box = (title, sw, ctls) => { const html = `<div class="fxbox"><h5>${title}${sw?`<label class="sw"><input type="checkbox" data-k="${sw}" ${fx[sw]?'checked':''}> تفعيل</label>`:''}</h5>${ctls.map(c=>(C.push(c),c.html)).join('')}</div>`; return html; };
+  p.innerHTML = `<div class="phead"><span class="chip" style="background:${t.color}"></span><span class="ttl">${escapeHtml(t.name)}</span>
+    <label class="note">قالب جاهز:</label><select id="presetSel">${Object.keys(PRESETS).map(k=>`<option ${t.preset===k?'selected':''}>${k}</option>`).join('')}<option ${t.preset==='مخصص'?'selected':''}>مخصص</option></select>
+    <button id="fxReset">إعادة ضبط</button><span class="note">المؤثرات غير هدّامة: التسجيل الأصلي يبقى نظيفاً ويمكنك التعديل في أي وقت.</span></div>
+  <div class="fxgrid">
+    <div class="fxbox atbox"><h5>🎤 أوتوتون وطبقة الصوت <label class="sw"><input type="checkbox" id="atOn" ${t.at.on?'checked':''}> تلقائي بعد كل تسجيل</label></h5>
+      <label class="toggle"><input type="checkbox" id="atTune" ${t.at.tune!==false?'checked':''}> تصحيح النغمة (أوتوتون)</label>
+      <div class="ctl"><span>المقام / المفتاح</span><select id="atKey">${AT_KEYS.map((k,i)=>`<option value="${i}" ${t.at.key===i?'selected':''}>${k}</option>`).join('')}</select><span></span></div>
+      <div class="ctl"><span>السلّم</span><select id="atScale">${Object.keys(AT_SCALES).map(k=>`<option ${t.at.scale===k?'selected':''}>${k}</option>`).join('')}</select><span></span></div>
+      ${(C.push(ctl('السرعة','speed',0,1,.01,v=>v<.02?'روبوتي':Math.round(v*300)+'ms',t.at,()=>{})), C[C.length-1].html)}
+      ${(C.push(ctl('القوة','amount',0,1,.01,fPct,t.at,()=>{})), C[C.length-1].html)}
+      ${(C.push(ctl('الطبقة','shift',-12,12,1,v=>(v>0?'+':'')+v+' st',t.at,()=>{})), C[C.length-1].html)}
+      <div class="row-btns"><button id="atApply" class="btn-acc">طبّق على مقاطع المسار</button><button id="atRemove">إزالة</button></div>
+      <div class="note">السرعة صفر = روبوتي مثل T-Pain · الطبقة: سالب = أعمق، موجب = أرفع</div></div>
+    <div class="fxbox echobox"><h5>🔁 صدى جاهز (اضغط واحد)</h5><div class="chips">${Object.keys(ECHO_PRESETS).map(k=>`<button class="chip2" data-echo="${k}">${k}</button>`).join('')}</div></div>
+    <div class="fxbox"><h5>🧠 EQ ذكي — 6 نطاقات <button class="mini2" id="geqReset">تصفير</button></h5>${GEQ_F.map((f,i)=>{ const o={get v(){return fx.geq[i]}, set v(x){fx.geq[i]=x}}; const c=ctl(GEQ_L[i]+' Hz','v',-12,12,.5,fDb,o,apply); C.push(c); return c.html; }).join('')}</div>
+    ${box('فلتر قص الترددات المنخفضة (High-Pass)','hpOn',[ctl('التردد','hp',20,1000,1,fHz,fx,apply)])}
+    ${box('فلتر قص الترددات العالية (Low-Pass)','lpOn',[ctl('التردد','lp',500,20000,10,fHz,fx,apply)])}
+    ${box('معادل الصوت EQ — 3 نطاقات',null,[ctl('منخفض','low',-15,15,.5,fDb,fx,apply),ctl('متوسط','mid',-15,15,.5,fDb,fx,apply),ctl('تردد المتوسط','midF',200,6000,10,fHz,fx,apply),ctl('عالي','high',-15,15,.5,fDb,fx,apply)])}
+    ${box('الضاغط (Compressor)','compOn',[ctl('العتبة','th',-50,0,1,fDb,fx,apply),ctl('النسبة','ratio',1,20,.5,fR,fx,apply)])}
+    ${box('تشويه / دفء (Saturation)',null,[ctl('الكمية','drive',0,1,.01,fPct,fx,apply)])}
+    <div class="fxbox"><h5>صدى (Delay) <label class="sw"><input type="checkbox" id="dPP" ${fx.delayPP?'checked':''}> بينغ بونغ</label></h5>
+      <div class="ctl"><span>المزامنة</span><select id="dSync">${Object.entries(SYNC_OPTS).map(([k,v])=>`<option value="${k}" ${fx.delaySync===k?'selected':''}>${v}</option>`).join('')}</select><span></span></div>
+      ${[ctl('المزج','delayMix',0,1,.01,fPct,fx,apply),ctl('الزمن (حر)','delayTime',.03,1.5,.005,fS,fx,apply),ctl('التكرار','delayFb',0,.9,.01,fPct,fx,apply)].map(c=>(C.push(c),c.html)).join('')}</div>
+    ${box('ريفيرب (Reverb)',null,[ctl('المزج','revMix',0,1,.01,fPct,fx,apply),ctl('حجم القاعة','revSize',.3,6,.1,fS,fx,apply)])}
+  </div>`;
+  C.forEach(c => c.bind && c.html && c.bind());
+  p.querySelectorAll('input[type=checkbox][data-k]').forEach(cb => cb.onchange = () => { fx[cb.dataset.k] = cb.checked; apply(); });
+  $('#presetSel').onchange = e => { const k = e.target.value; if(!PRESETS[k]) return; t.fx = Object.assign(defFx(), PRESETS[k]); t.preset = k; if(t.n) applyFx(t.n, t.fx, ctx); renderFx(); toast('تم تطبيق قالب: '+k); };
+  $('#atOn').onchange = e => { t.at.on = e.target.checked; renderTracks(); };
+  $('#atTune').onchange = e => { t.at.tune = e.target.checked; };
+  p.querySelectorAll('[data-echo]').forEach(b => b.onclick = () => { setEcho(fx, b.dataset.echo); apply(); renderFx(); toast('صدى جاهز: '+b.dataset.echo); });
+  $('#dSync').onchange = e => { fx.delaySync = e.target.value; apply(); };
+  $('#dPP').onchange = e => { fx.delayPP = e.target.checked; apply(); };
+  $('#geqReset').onclick = () => { fx.geq = [0,0,0,0,0,0]; apply(); renderFx(); };
+  $('#atKey').onchange = e => { t.at.key = +e.target.value; };
+  $('#atScale').onchange = e => { t.at.scale = e.target.value; };
+  $('#atApply').onclick = () => applyAutotune(t);
+  $('#atRemove').onclick = () => removeAutotune(t);
+  $('#fxReset').onclick = () => { t.fx = defFx(); t.preset='نظيف (بدون مؤثرات)'; if(t.n) applyFx(t.n,t.fx,ctx); renderFx(); };
+}
+function renderMaster(){
+  const p = $('#pMaster'), m = S.mfx, apply = () => { if(M) applyMaster(M, m); };
+  const C = [ctl('منخفض','low',-12,12,.5,fDb,m,apply), ctl('متوسط','mid',-12,12,.5,fDb,m,apply), ctl('عالي','high',-12,12,.5,fDb,m,apply), ctl('مستوى الماستر','vol',-24,6,.5,fDb,m,apply)];
+  p.innerHTML = `<div class="phead"><span class="ttl">قناة الماستر</span><span class="note">كل المسارات تمر من هنا قبل الخروج وقبل التصدير.</span></div>
+  <div class="fxgrid">
+    <div class="fxbox"><h5>معادل الماستر</h5>${C[0].html}${C[1].html}${C[2].html}</div>
+    <div class="fxbox"><h5>الديناميكية</h5>
+      <label class="toggle"><input type="checkbox" id="mGlue" ${m.glue?'checked':''}> ضاغط لاصق (Glue) للمزيج</label>
+      <label class="toggle"><input type="checkbox" id="mLim" ${m.limiter?'checked':''}> محدد (Limiter) يمنع التشويه عند ‎-1.5 dB</label></div>
+    <div class="fxbox"><h5>الخرج</h5>${C[3].html}<div class="note">التصدير: WAV ستيريو 16-bit. إذا كان التكرار مفعّلاً يُصدَّر جزء التكرار فقط.</div></div>
+  </div>`;
+  C.forEach(c=>c.bind());
+  $('#mGlue').onchange = e => { m.glue = e.target.checked; apply(); };
+  $('#mLim').onchange = e => { m.limiter = e.target.checked; apply(); };
+}
+function renderClipPane(){
+  const p = $('#pClip'), s = selClipObj();
+  if(!s){ p.innerHTML = '<div class="note">اضغط على أي مقطع في المسارات لتحديده، ثم استخدم الأدوات هنا. يمكنك سحب المقطع يميناً ويساراً لتحريكه.</div>'; return; }
+  const c = s.clip, gdb = { g: +(20*Math.log10(c.gain)).toFixed(1) };
+  const gc = ctl('كسب المقطع','g',-24,24,.5,fDb,gdb,()=>{ c.gain = dbToGain(gdb.g); });
+  p.innerHTML = `<div class="phead"><span class="chip" style="background:${s.track.color}"></span><span class="ttl">${escapeHtml(c.name)}</span>
+    <span class="note">في: ${escapeHtml(s.track.name)} · يبدأ عند <span class="mono">${fmtTime(c.start)}</span> · المدة <span class="mono">${fmtTime(c.duration)}</span></span></div>
+  <div class="fxgrid"><div class="fxbox" style="grid-column:span 3"><h5>أدوات التحرير</h5><div class="row-btns">
+    <button data-op="split">✂ قص عند المؤشر (S)</button><button data-op="dup">⧉ تكرار (Ctrl+D)</button>
+    <button data-op="normalize">📈 تطبيع الصوت</button><button data-op="fadein">◢ تلاشي دخول</button><button data-op="fadeout">◣ تلاشي خروج</button>
+    <button data-op="reverse">⇄ عكس</button><button data-op="at" style="color:var(--purple)">🎤 أوتوتون للمقطع</button><button data-op="exportClip">⬇ تصدير المقطع</button><button data-op="del" style="color:var(--rec)">🗑 حذف (Del)</button></div></div>
+    <div class="fxbox"><h5>المستوى</h5>${gc.html}</div></div>`;
+  gc.bind();
+  const gEl = p.querySelector('input[type=range]'); gEl.addEventListener('change', () => renderTracks());
+  p.querySelectorAll('[data-op]').forEach(b => b.onclick = () => { const op = b.dataset.op; if(op==='at') applyAutotune(s.track, [c]); else if(op==='fadein') clipOps.fade('in'); else if(op==='fadeout') clipOps.fade('out'); else clipOps[op](); });
+}
+function renderSettings(){
+  const p = $('#pSet');
+  const o = {g:S.inGainDb, l:S.latExtraMs};
+  const g = ctl('كسب الإدخال','g',-20,20,.5,fDb,o,()=>{ S.inGainDb=o.g; if(inGain) inGain.gain.value=dbToGain(S.inGainDb); });
+  const l = ctl('تعويض','l',-200,200,1,v=>(v>0?'+':'')+v+' ms',o,()=>{ S.latExtraMs=o.l; });
+  const autoLat = ctx ? Math.round(((ctx.outputLatency||0)+(ctx.baseLatency||0))*1000) : null;
+  p.innerHTML = `<div class="fxgrid">
+    <div class="fxbox" style="grid-column:span 2"><h5>الميكروفون</h5>
+      <div class="row-btns"><select id="devSel" style="flex:1;min-width:200px"><option>— اضغط "تفعيل المايك" لعرض الأجهزة —</option></select><button id="micOn" class="btn-acc">🎤 تفعيل المايك</button></div>
+      ${g.html}
+      <label class="toggle"><input type="checkbox" id="sEc" ${S.ec?'checked':''}> إلغاء الصدى (أوقفه للتسجيل الاحترافي بالسماعات)</label>
+      <label class="toggle"><input type="checkbox" id="sNs" ${S.ns?'checked':''}> تقليل الضوضاء من المتصفح</label></div>
+    <div class="fxbox"><h5>المراقبة (سماع صوتك)</h5>
+      <label class="toggle"><input type="checkbox" id="sMon" ${S.monitor?'checked':''}> سماع صوتي أثناء التسجيل</label>
+      <label class="toggle"><input type="checkbox" id="sMonFx" ${S.monitorFx?'checked':''}> مع مؤثرات المسار</label>
+      <div class="note">⚠ استخدم سماعات رأس حتى لا يحدث صفير.</div></div>
+    <div class="fxbox"><h5>مزامنة التسجيل مع اللحن</h5>${l.html}
+      <div class="note">التأخير التلقائي: <span class="mono">${autoLat===null?'—':autoLat+' ms'}</span>. إذا جاء صوتك متأخراً عن الإيقاع زِد القيمة.</div></div>
+    <div class="fxbox"><h5>طريقة التسجيل</h5><div class="note">1) جهّز المسار بزر ● (أو سيُنشأ مسار تلقائياً)<br>2) ضع المؤشر حيث تريد البدء<br>3) اضغط <kbd>R</kbd> — يعدّ مازورة ثم يبدأ<br>4) اضغط <kbd>Space</kbd> للإيقاف</div></div>
+  </div>`;
+  g.bind(); l.bind();
+  $('#micOn').onclick = () => initMic(true);
+  $('#devSel').onchange = e => { S.deviceId = e.target.value; initMic(true); };
+  $('#sEc').onchange = e => { S.ec = e.target.checked; if(mic) initMic(true); };
+  $('#sNs').onchange = e => { S.ns = e.target.checked; if(mic) initMic(true); };
+  $('#sMon').onchange = e => { S.monitor = e.target.checked; if(S.monitor && !mic) initMic(); updateMonitorRoute(); };
+  $('#sMonFx').onchange = e => { S.monitorFx = e.target.checked; updateMonitorRoute(); };
+  if(mic) listDevices();
+}
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on', x===b));
+  document.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on', x.id===b.dataset.p));
+});
+
+/* =========================================================
+   METERS & DASHBOARD
+   ========================================================= */
+const cIn = $('#cIn'), cMaster = $('#cMaster'), cSpec = $('#cSpec');
+function setupCanvases(){ [cIn,cMaster,cSpec].forEach(c => { const r = c.getBoundingClientRect(), d = window.devicePixelRatio||1; c.width = Math.max(10,r.width*d); c.height = Math.max(10,r.height*d); }); }
+const tmpBuf = new Float32Array(4096);
+function rms(an){ an.getFloatTimeDomainData(tmpBuf.subarray(0, an.fftSize)); let s=0, pk=0; for(let i=0;i<an.fftSize;i++){ const v=tmpBuf[i]; s+=v*v; if(Math.abs(v)>pk) pk=Math.abs(v); } return {rms:Math.sqrt(s/an.fftSize), pk}; }
+const toDb = v => v>1e-6 ? 20*Math.log10(v) : -120;
+const dbPos = db => Math.max(0, Math.min(1, (db+60)/60));
+const hold = {in:0, L:0, R:0};
+function drawMeterBar(g, x, y, w, h, db, pkdb){
+  const grad = g.createLinearGradient(x,0,x+w,0); grad.addColorStop(0,'#2bb37a'); grad.addColorStop(.75,'#3ddc97'); grad.addColorStop(.88,'#ffb547'); grad.addColorStop(1,'#ff4d5e');
+  g.fillStyle = '#161a20'; g.fillRect(x,y,w,h);
+  g.fillStyle = grad; g.fillRect(x,y,w*dbPos(db),h);
+  g.fillStyle = '#fff'; g.fillRect(x + w*dbPos(pkdb) - 1, y, 2, h);
+}
+function drawTicks(g, W, H){ g.fillStyle='rgba(255,255,255,.25)'; [-48,-36,-24,-12,-6,0].forEach(d => g.fillRect(W*dbPos(d), H-4, 1, 4)); }
+function tick(){
+  if(ctx){
+    // input meter
+    let g = cIn.getContext('2d'), W = cIn.width, H = cIn.height;
+    g.clearRect(0,0,W,H);
+    if(inAn && mic){ const m = rms(inAn), db = toDb(m.rms), pk = toDb(m.pk); hold.in = Math.max(pk, hold.in - 0.6);
+      drawMeterBar(g, 0, H*.2, W, H*.5, db, hold.in); $('#inDb').textContent = (pk>-100?pk.toFixed(1):'-∞')+' dB';
+      if(pk > -0.5) $('#inDb').style.color = 'var(--rec)'; else $('#inDb').style.color = ''; }
+    else { drawMeterBar(g, 0, H*.2, W, H*.5, -120, -120); }
+    drawTicks(g,W,H);
+    // master meters
+    g = cMaster.getContext('2d'); W = cMaster.width; H = cMaster.height; g.clearRect(0,0,W,H);
+    const L = rms(M.aL), R = rms(M.aR); hold.L = Math.max(toDb(L.pk), hold.L-0.6); hold.R = Math.max(toDb(R.pk), hold.R-0.6);
+    drawMeterBar(g, 0, H*.08, W, H*.36, toDb(L.rms), hold.L); drawMeterBar(g, 0, H*.52, W, H*.36, toDb(R.rms), hold.R);
+    const mpk = Math.max(hold.L, hold.R); $('#mDb').textContent = (mpk>-100?mpk.toFixed(1):'-∞')+' dB';
+    // spectrum
+    g = cSpec.getContext('2d'); W = cSpec.width; H = cSpec.height;
+    const fb = new Uint8Array(M.an.frequencyBinCount); M.an.getByteFrequencyData(fb);
+    g.clearRect(0,0,W,H);
+    const bars = Math.floor(W/(5*(window.devicePixelRatio||1))), ny = ctx.sampleRate/2;
+    const grad = g.createLinearGradient(0,H,0,0); grad.addColorStop(0,'#2bb37a'); grad.addColorStop(.6,'#4da3ff'); grad.addColorStop(1,'#a77bff');
+    g.fillStyle = grad;
+    for(let i=0;i<bars;i++){
+      const f0 = 30*Math.pow(ny/30*.9, i/bars), f1 = 30*Math.pow(ny/30*.9, (i+1)/bars);
+      const a = Math.floor(f0/ny*fb.length), b = Math.max(a+1, Math.floor(f1/ny*fb.length));
+      let mx = 0; for(let k=a;k<b;k++) if(fb[k]>mx) mx=fb[k];
+      const h = (mx/255)*H; const bw = W/bars;
+      g.fillRect(i*bw+1, H-h, bw-2, h);
+    }
+    // track meters
+    tracks.forEach(t => { if(t.n && t.meterEl){ const m = rms(t.n.meter); t.meterEl.style.width = (dbPos(toDb(m.pk))*100)+'%'; } });
+    // transport housekeeping
+    if(S.playing){
+      const p = curPos();
+      if(S.loop && !S.recording && !P.rec && p >= S.loopEnd) play(S.loopStart);
+      else if(!S.recording && !P.rec && p > projectEnd() + 2 && !S.loop) { pause(); }
+      updatePlayhead(); updateRecClip();
+      if(P.rec){ $('#sSub').textContent = p < P.rec.pos ? 'العدّ: '+Math.ceil(P.rec.pos-p)+' …' : 'نوتات: '+P.rec.events.length+' · '+fmtTime(p-P.rec.pos); }
+      if(S.recording && p > timelineSec() - 20) layoutWidth();
+    }
+  }
+  requestAnimationFrame(tick);
+}
+function updateStats(){
+  $('#stT').textContent = tracks.length;
+  $('#stC').textContent = tracks.reduce((a,t)=>a+t.clips.length,0);
+  $('#stD').textContent = fmtShort(projectEnd());
+  $('#stR').textContent = S.recCount;
+  if(ctx) $('#stLat').textContent = Math.round(((ctx.outputLatency||0)+(ctx.baseLatency||0))*1000)+'ms';
+}
+
+/*AT-START*/
+/* =========================================================
+   AUTO-TUNE ENGINE  (YIN pitch detection + scale quantize + TD-PSOLA)
+   ========================================================= */
+const AT_KEYS = ['C دو','C# دو#','D ري','D# ري#','E مي','F فا','F# فا#','G صول','G# صول#','A لا','A# لا#','B سي'];
+const AT_SCALES = {
+  'مينور (Minor)':[0,2,3,5,7,8,10],
+  'ماجور (Major)':[0,2,4,5,7,9,11],
+  'كروماتيك (كل النغمات)':[0,1,2,3,4,5,6,7,8,9,10,11],
+  'مقام حجاز':[0,1,4,5,7,8,10],
+  'مقام نهاوند':[0,2,3,5,7,8,11],
+  'مقام كرد':[0,1,3,5,7,8,10],
+  'مقام بياتي (ربع تون)':[0,1.5,3,5,7,8,10],
+  'مقام راست (ربع تون)':[0,2,3.5,5,7,9,10.5],
+  'مقام صبا (ربع تون)':[0,1.5,3,4,7,8,10],
+  'بنتاتونيك':[0,3,5,7,10],
+};
+const defAT = () => ({on:false, tune:true, key:9, scale:'مينور (Minor)', speed:.04, amount:1, shift:0});
+
+function atDetect(x, sr){
+  const D = Math.max(1, Math.round(sr/12000)), ds = sr/D, n = Math.floor(x.length/D), y = new Float32Array(n);
+  for(let i=0;i<n;i++){ let s=0; for(let k=0;k<D;k++) s+=x[i*D+k]; y[i]=s/D; }
+  const tauMin = Math.floor(ds/1000), tauMax = Math.ceil(ds/65);
+  const W = tauMax*2 + 64, N = W - tauMax, hop = Math.round(ds*0.008);
+  const d = new Float32Array(tauMax+2), f0 = [];
+  let gmax = 0; for(let i=0;i<n;i++){ const a=Math.abs(y[i]); if(a>gmax) gmax=a; }
+  const thr = Math.max(0.002, gmax*0.02);
+  for(let s=0; s+W<n; s+=hop){
+    let e=0; for(let j=0;j<W;j++) e+=y[s+j]*y[s+j];
+    if(Math.sqrt(e/W) < thr){ f0.push(0); continue; }
+    let run=0; d[0]=1;
+    for(let tau=1; tau<=tauMax; tau++){
+      let sum=0; for(let j=0;j<N;j++){ const v=y[s+j]-y[s+j+tau]; sum+=v*v; }
+      run+=sum; d[tau] = run>0 ? sum*tau/run : 1;
+    }
+    let best=-1;
+    for(let tau=Math.max(2,tauMin); tau<=tauMax; tau++){
+      if(d[tau]<0.18){ while(tau+1<=tauMax && d[tau+1]<d[tau]) tau++; best=tau; break; }
+    }
+    if(best<0){ f0.push(0); continue; }
+    let t=best;
+    if(t>1 && t<tauMax){ const a=d[t-1], b=d[t], c=d[t+1], den=a-2*b+c; if(Math.abs(den)>1e-9) t += 0.5*(a-c)/den; }
+    f0.push(ds/t);
+  }
+  // median-of-5 smoothing on voiced frames, remove isolated blips
+  const sm = f0.slice();
+  for(let i=0;i<f0.length;i++){
+    if(!f0[i]) continue;
+    const w=[]; for(let k=i-2;k<=i+2;k++) if(k>=0 && k<f0.length && f0[k]) w.push(f0[k]);
+    if(w.length<3){ sm[i]=0; continue; }
+    w.sort((a,b)=>a-b); sm[i]=w[w.length>>1];
+  }
+  return { f0:sm, hop:hop*D, center:(W*D)/2 };
+}
+function atQuantize(m, key, sc){
+  const rel = m - key, oct = Math.floor(rel/12), w = rel - oct*12;
+  let best = sc[0], bd = 99;
+  for(const deg of sc.concat([sc[0]+12])){ const dd=Math.abs(w-deg); if(dd<bd){ bd=dd; best=deg; } }
+  return key + oct*12 + best;
+}
+function atRatios(f0, at, hopSec, mapFn){
+  const sc = AT_SCALES[at.scale] || AT_SCALES['كروماتيك (كل النغمات)'];
+  const tc = at.speed*0.3, out = new Float32Array(f0.length); let cur = null;
+  for(let i=0;i<f0.length;i++){
+    const f=f0[i];
+    if(!f){ out[i]=1; cur=null; continue; }
+    const m = 69+12*Math.log2(f/440);
+    const tune = at.tune !== false, tgt = mapFn ? mapFn(m) : tune ? atQuantize(m, at.key, sc) : m;
+    if(cur===null || (!tune && !mapFn)) cur = tc<=0.002 || (!tune && !mapFn) ? tgt : m;
+    else if(tc<=0.002) cur = tgt;
+    else cur += (tgt-cur)*(1-Math.exp(-hopSec/tc));
+    const corr = m + (cur-m)*(mapFn ? 1 : at.amount) + (at.shift||0);
+    out[i] = Math.min(2, Math.max(.5, Math.pow(2,(corr-m)/12)));
+  }
+  return out;
+}
+function atProcess(x, sr, at, mapFn){
+  const L = x.length, det = atDetect(x, sr), ratios = atRatios(det.f0, at, det.hop/sr, mapFn);
+  const fr = p => Math.max(0, Math.min(det.f0.length-1, Math.round((p-det.center)/det.hop)));
+  const unv = Math.round(sr*0.005);
+  // analysis pitch marks
+  const marks = []; let p = 0;
+  while(p < L){
+    const i = fr(p), f = det.f0[i];
+    if(f){
+      const T = sr/f;
+      let q = Math.round(p), r = Math.round(T*0.2), bi=q, bv=-1e9;
+      for(let j=q-r;j<=q+r;j++){ if(j>=0 && j<L && x[j]>bv){ bv=x[j]; bi=j; } }
+      if(marks.length && bi <= marks[marks.length-1].pos + T*0.5) bi = Math.round(p);
+      marks.push({pos:bi, T, r:ratios[i], v:true}); p = bi + T;
+    } else { marks.push({pos:Math.round(p), T:unv, r:1, v:false}); p += unv; }
+  }
+  const out = new Float32Array(L), ws = new Float32Array(L);
+  let ts = marks.length ? marks[0].pos : L, k = 0;
+  while(ts < L){
+    while(k+1<marks.length && Math.abs(marks[k+1].pos-ts) <= Math.abs(marks[k].pos-ts)) k++;
+    const m = marks[k], half = Math.max(2, Math.round(m.T)), di0 = Math.round(ts);
+    for(let j=-half;j<half;j++){
+      const si=m.pos+j, di=di0+j; if(si<0||si>=L||di<0||di>=L) continue;
+      const w = 0.5-0.5*Math.cos(Math.PI*(j+half)/half);
+      out[di]+=x[si]*w; ws[di]+=w;
+    }
+    ts += m.v ? m.T/m.r : m.T;
+  }
+  for(let i=0;i<L;i++) if(ws[i]>0.35) out[i]/=ws[i];
+  return out;
+}
+/*AT-END*/
+
+
+/* =========================================================
+   VIRTUAL PIANO
+   ========================================================= */
+const PIANO_SOUNDS = {piano:'🎹 بيانو كلاسيك', epiano:'✨ بيانو كهربائي', organ:'⛪ أورغ', pad:'🌫 سينث باد', pluck:'🎸 بلَك'};
+const P = { sound:'piano', oct:4, sustain:false, shiftSus:false, vol:.8, rec:null, held:new Map(), sustained:new Set(), count:0 };
+const PC_KEYS = {KeyA:0,KeyW:1,KeyS:2,KeyE:3,KeyD:4,KeyF:5,KeyT:6,KeyG:7,KeyY:8,KeyH:9,KeyU:10,KeyJ:11,KeyK:12,KeyO:13,KeyL:14,KeyP:15,Semicolon:16};
+const PC_LABEL = {}; Object.entries(PC_KEYS).forEach(([k,v]) => PC_LABEL[v] = k==='Semicolon' ? ';' : k.slice(3));
+const KB_LOW = 48, KB_HIGH = 84; // C3..C6
+
+function makeVoice(c, dest, m, t, type, vol){
+  const f = 440*Math.pow(2,(m-69)/12);
+  const out = c.createGain(); out.connect(dest);
+  const env = out.gain, nodes = [];
+  let rel = .3, peak = vol;
+  const osc = (freq, type='sine') => { const o = c.createOscillator(); o.type = type; o.frequency.value = freq; nodes.push(o); return o; };
+  if(type==='piano'){
+    const lp = c.createBiquadFilter(); lp.type='lowpass'; lp.Q.value=.3;
+    lp.frequency.setValueAtTime(Math.min(16000, f*16), t); lp.frequency.exponentialRampToValueAtTime(Math.max(300, f*2.5), t+1.8);
+    lp.connect(out);
+    const dec = 2.6*Math.pow(261.6/f, .5) + .5;
+    for(let n=1;n<=8;n++){
+      const fn = f*n*Math.sqrt(1+.0004*n*n); if(fn > c.sampleRate/2-400) break;
+      const g = c.createGain(), a = .32/Math.pow(n,1.15);
+      g.gain.setValueAtTime(a, t); g.gain.setTargetAtTime(a*.35, t+.01, .08); g.gain.setTargetAtTime(0, t+.12, dec/(1+n*.45)/2.2);
+      const o = osc(fn); o.connect(g); g.connect(lp);
+      if(n===1){ const o2 = osc(fn*1.0012); const g2=c.createGain(); g2.gain.value=.5; o2.connect(g2); g2.connect(g); }
+    }
+    peak = vol*.9; rel = .35;
+  } else if(type==='epiano'){
+    const car = osc(f), mod = osc(f), mg = c.createGain(), g = c.createGain();
+    mg.gain.setValueAtTime(f*2.2, t); mg.gain.setTargetAtTime(f*.15, t, .25);
+    mod.connect(mg); mg.connect(car.frequency);
+    g.gain.setValueAtTime(.4, t); g.gain.setTargetAtTime(0, t+.02, 1.6);
+    car.connect(g); g.connect(out);
+    const bell = osc(f*4.0), bg = c.createGain(); bg.gain.setValueAtTime(.05,t); bg.gain.setTargetAtTime(0,t,.12); bell.connect(bg); bg.connect(out);
+    peak = vol; rel = .4;
+  } else if(type==='organ'){
+    [[1,1],[2,.7],[3,.45],[4,.35],[6,.2],[8,.15]].forEach(([h,a]) => { if(f*h > c.sampleRate/2-400) return; const o = osc(f*h), g = c.createGain(); g.gain.value = a*.13; o.connect(g); g.connect(out); });
+    peak = vol; rel = .08;
+  } else if(type==='pad'){
+    const lp = c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value = Math.min(2400, f*6); lp.Q.value=.8; lp.connect(out);
+    [-9,0,9].forEach(dt => { const o = osc(f,'sawtooth'); o.detune.value = dt; const g=c.createGain(); g.gain.value=.07; o.connect(g); g.connect(lp); });
+    peak = vol; rel = 1.1;
+  } else { // pluck
+    const lp = c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(f*10, t); lp.frequency.exponentialRampToValueAtTime(Math.max(200,f*1.5), t+.35); lp.connect(out);
+    const o = osc(f,'sawtooth'), g = c.createGain(); g.gain.setValueAtTime(.3, t); g.gain.setTargetAtTime(0, t+.005, .35); o.connect(g); g.connect(lp);
+    peak = vol; rel = .2;
+  }
+  const atk = type==='pad' ? .45 : type==='organ' ? .012 : .004;
+  env.setValueAtTime(0, t); env.linearRampToValueAtTime(peak, t+atk);
+  nodes.forEach(o => o.start(t));
+  let released = false;
+  return {
+    release(rt){
+      if(released) return; released = true;
+      rt = Math.max(rt, t + .01);
+      if(env.cancelAndHoldAtTime) env.cancelAndHoldAtTime(rt); else { env.cancelScheduledValues(rt); env.setValueAtTime(peak, rt); }
+      env.setTargetAtTime(0, rt, rel/4);
+      nodes.forEach(o => { try{ o.stop(rt + rel*2 + .05); }catch(e){} });
+    }
+  };
+}
+function pianoTrack(){ return tracks.find(t => t.kind==='piano' && t===S.sel) || tracks.find(t => t.kind==='piano') || null; }
+function pianoDest(){ const pt = pianoTrack(); return pt && pt.n ? pt.n.input : M.input; }
+function pianoActive(){ return $('#pPiano').classList.contains('on'); }
+
+function noteOn(m){
+  ensureCtx();
+  if(P.held.has(m)) return;
+  const v = makeVoice(ctx, pianoDest(), m, ctx.currentTime, P.sound, P.vol);
+  if(P.rec && S.playing){ v.ev = {m, t:curPos(), end:null, sound:P.sound, vol:P.vol}; P.rec.events.push(v.ev); }
+  P.held.set(m, v);
+  const k = document.querySelector(`.pk[data-m="${m}"]`); if(k) k.classList.add('down');
+}
+function releaseVoice(v){
+  v.release(ctx.currentTime);
+  if(v.ev && v.ev.end===null) v.ev.end = S.playing ? curPos() : v.ev.t + .3;
+}
+function noteOff(m){
+  const v = P.held.get(m); if(!v) return;
+  P.held.delete(m);
+  const k = document.querySelector(`.pk[data-m="${m}"]`); if(k) k.classList.remove('down');
+  if(P.sustain || P.shiftSus) P.sustained.add(v); else releaseVoice(v);
+}
+function releaseSustain(){ if(P.sustain || P.shiftSus) return; P.sustained.forEach(releaseVoice); P.sustained.clear(); }
+function allNotesOff(){ [...P.held.keys()].forEach(noteOff); P.sustained.forEach(releaseVoice); P.sustained.clear(); }
+
+function startPianoRec(){
+  ensureCtx();
+  if(S.recording) return toast('أوقف تسجيل المايك أولاً');
+  if(P.rec){ pause(); return; }
+  let t = pianoTrack();
+  if(!t){ t = addTrack('بيانو'); t.kind = 'piano'; t.fx = Object.assign(defFx(), {revMix:.18, revSize:2.2}); t.preset='مخصص'; renderTracks(); }
+  S.sel = t;
+  const pos = S.playhead, ci = S.countIn ? (60/S.bpm)*S.sig : 0;
+  stopSources(); S.playing = false;
+  P.rec = {track:t, pos, events:[]};
+  S.returnPos = pos; countInEnd = pos;
+  play(pos - ci);
+  renderPanel(); setPlayUI();
+}
+async function finishPianoRec(){
+  const r = P.rec; if(!r) return;
+  P.rec = null; countInEnd = -Infinity;
+  allNotesOff();
+  const now = Math.max(0, S.playing ? curPos() : S.playhead);
+  const evs = r.events.filter(e => (e.end ?? now) > r.pos);
+  evs.forEach(e => { if(e.end===null) e.end = now; if(e.t < r.pos) e.t = r.pos; });
+  updatePianoRecBtn();
+  if(!evs.length){ toast('لم يتم عزف أي نوتة أثناء التسجيل'); return; }
+  const sr = ctx.sampleRate, last = Math.max(...evs.map(e=>e.end)) - r.pos + 2.5;
+  const off = new OfflineAudioContext(2, Math.ceil(last*sr), sr);
+  const bus = off.createGain(); bus.connect(off.destination);
+  evs.forEach(e => { const v = makeVoice(off, bus, e.m, e.t - r.pos, e.sound, e.vol); v.release(e.end - r.pos); });
+  const buf = await off.startRendering();
+  pushUndo();
+  P.count++;
+  const c = addClip(r.track, buf, r.pos, 'بيانو '+P.count+' · '+evs.length+' نوتة');
+  S.selClip = {track:r.track, clip:c};
+  renderTracks(); renderPanel();
+  toast('✔ تم تسجيل البيانو ('+evs.length+' نوتة)');
+}
+function updatePianoRecBtn(){
+  const b = $('#pRec'); if(!b) return;
+  b.classList.toggle('recon', !!P.rec);
+  b.textContent = P.rec ? '⏹ إيقاف تسجيل البيانو' : '⏺ سجّل عزف البيانو';
+}
+function midiName(m){ const n = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'][m%12]; return n + (Math.floor(m/12)-1); }
+function renderPiano(){
+  const p = $('#pPiano');
+  const base = 12*(P.oct+1);
+  let whites = '', blacks = '', wi = 0;
+  const nW = [...Array(KB_HIGH-KB_LOW+1).keys()].filter(i => ![1,3,6,8,10].includes((KB_LOW+i)%12)).length;
+  for(let m=KB_LOW; m<=KB_HIGH; m++){
+    const black = [1,3,6,8,10].includes(m%12);
+    const lab = (m-base>=0 && PC_LABEL[m-base]!==undefined) ? `<em>${PC_LABEL[m-base]}</em>` : '';
+    const nm = m%12===0 ? `<small>${midiName(m)}</small>` : '';
+    if(black) blacks += `<div class="pk blk" data-m="${m}" style="left:calc(${(wi/nW*100)}% - ${100/nW*0.32}%);width:${100/nW*0.64}%">${lab}</div>`;
+    else { whites += `<div class="pk wht" data-m="${m}">${lab}${nm}</div>`; wi++; }
+  }
+  p.innerHTML = `<div class="phead">
+      <span class="ttl">🎹 البيانو</span>
+      <select id="pSound">${Object.entries(PIANO_SOUNDS).map(([k,v])=>`<option value="${k}" ${P.sound===k?'selected':''}>${v}</option>`).join('')}</select>
+      <div class="grp"><button id="pOctDn">−</button><span class="mono" id="pOct">C${P.oct}</span><button id="pOctUp">+</button></div>
+      <button id="pSus" class="${P.sustain?'on':''}">🦶 سستين</button>
+      <div class="grp" style="width:150px"><label>الصوت</label><input type="range" id="pVol" min="0" max="1" step=".01" value="${P.vol}"></div>
+      <button id="pRec" class="pianorec">⏺ سجّل عزف البيانو</button>
+      <span class="note">اعزف بالماوس أو الكيبورد: <kbd>A W S E D F T G Y H U J K</kbd> · <kbd>Z</kbd>/<kbd>X</kbd> تغيير الأوكتاف · اضغط <kbd>Shift</kbd> للسستين</span>
+    </div>
+    <div class="keyboard" dir="ltr"><div class="whites">${whites}</div>${blacks}</div>`;
+  $('#pSound').onchange = e => { P.sound = e.target.value; };
+  $('#pOctDn').onclick = () => { P.oct = Math.max(1, P.oct-1); renderPiano(); };
+  $('#pOctUp').onclick = () => { P.oct = Math.min(7, P.oct+1); renderPiano(); };
+  $('#pSus').onclick = e => { P.sustain = !P.sustain; e.target.classList.toggle('on', P.sustain); releaseSustain(); };
+  $('#pVol').oninput = e => { P.vol = +e.target.value; };
+  $('#pRec').onclick = startPianoRec;
+  updatePianoRecBtn();
+  let mouseDown = false;
+  p.querySelectorAll('.pk').forEach(k => {
+    const m = +k.dataset.m;
+    k.addEventListener('mousedown', e => { e.preventDefault(); mouseDown = true; noteOn(m); });
+    k.addEventListener('mouseenter', () => { if(mouseDown) noteOn(m); });
+    k.addEventListener('mouseleave', () => noteOff(m));
+    k.addEventListener('mouseup', () => noteOff(m));
+    k.addEventListener('touchstart', e => { e.preventDefault(); noteOn(m); }, {passive:false});
+    k.addEventListener('touchend', e => { e.preventDefault(); noteOff(m); });
+  });
+  window.addEventListener('mouseup', () => { mouseDown = false; });
+}
+
+/* =========================================================
+   AUTO-TUNE — apply to clips
+   ========================================================= */
+function clipMono(c){
+  const b = c.buffer, sr = b.sampleRate, s0 = Math.round(c.offset*sr), n = Math.max(1, Math.round(c.duration*sr));
+  const x = new Float32Array(n), chs = b.numberOfChannels;
+  for(let ch=0; ch<chs; ch++){ const d = b.getChannelData(ch); for(let i=0;i<n;i++) x[i] += (d[s0+i]||0)/chs; }
+  return x;
+}
+async function applyAutotune(t, clips, silent){
+  clips = clips || t.clips;
+  if(!clips.length) return toast('لا توجد مقاطع في هذا المسار');
+  showModal('جاري تطبيق الأوتوتون…');
+  await new Promise(r => setTimeout(r, 30));
+  if(!silent) pushUndo();
+  for(const c of clips){
+    if(!c.raw) c.raw = {buffer:c.buffer, offset:c.offset, duration:c.duration};
+    const src = {buffer:c.raw.buffer, offset:c.raw.offset, duration:c.raw.duration};
+    const x = clipMono(src), sr = src.buffer.sampleRate;
+    const y = atProcess(x, sr, t.at);
+    const b = new AudioBuffer({numberOfChannels:1, length:y.length, sampleRate:sr});
+    b.copyToChannel(y, 0);
+    c.buffer = b; c.offset = 0; c.duration = b.duration; c.tuned = true;
+    await new Promise(r => setTimeout(r, 0));
+  }
+  hideModal(); renderTracks(); renderPanel();
+  if(!silent) toast('✔ تمت المعالجة — '+(t.at.tune!==false?'أوتوتون '+AT_KEYS[t.at.key].split(' ')[1]+' · '+t.at.scale:'')+(t.at.shift?' · طبقة '+(t.at.shift>0?'+':'')+t.at.shift:''));
+}
+function removeAutotune(t){
+  const cl = t.clips.filter(c => c.raw);
+  if(!cl.length) return toast('لا يوجد أوتوتون مطبّق على هذا المسار');
+  pushUndo();
+  cl.forEach(c => { c.buffer = c.raw.buffer; c.offset = c.raw.offset; c.duration = c.raw.duration; c.raw = null; c.tuned = false; });
+  renderTracks(); renderPanel(); toast('تمت إزالة الأوتوتون وإرجاع الصوت الأصلي');
+}
+
+
+/* =========================================================
+   BEAT STYLES
+   ========================================================= */
+const BEAT_STYLES = {pop:'بوب', trap:'تراب', boombap:'بوم باب', khaleeji:'خليجي'};
+async function renderBeat(style, bpm, sr){
+  const beat = 60/bpm, bars = 4, len = beat*4*bars;
+  const off = new OfflineAudioContext(2, Math.ceil((len+.6)*sr), sr);
+  const out = off.createGain(); out.gain.value = .75; out.connect(off.destination);
+  const noise = off.createBuffer(1, sr, sr); const nd = noise.getChannelData(0); for(let i=0;i<sr;i++) nd[i] = Math.random()*2-1;
+  const mtof = m => 440*Math.pow(2,(m-69)/12);
+  const env = (g,t,a,d) => { g.gain.setValueAtTime(a,t); g.gain.exponentialRampToValueAtTime(.001,t+d); };
+  const kick = (t,v=1) => { const o=off.createOscillator(), g=off.createGain(); o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(42,t+.12); env(g,t,v,.42); o.connect(g); g.connect(out); o.start(t); o.stop(t+.5); };
+  const snare = (t,v=.7,clap) => { const s=off.createBufferSource(); s.buffer=noise; const f=off.createBiquadFilter(); f.type='bandpass'; f.frequency.value=clap?1300:1900; f.Q.value=clap?1.5:.7;
+    const g=off.createGain(); if(clap){ [0,.012,.024].forEach(d=>{ g.gain.setValueAtTime(v,t+d); g.gain.exponentialRampToValueAtTime(.05,t+d+.01); }); g.gain.setValueAtTime(v,t+.036); g.gain.exponentialRampToValueAtTime(.001,t+.25); } else env(g,t,v,.2);
+    s.connect(f); f.connect(g); g.connect(out); s.start(t); s.stop(t+.3);
+    if(!clap){ const o=off.createOscillator(), g2=off.createGain(); o.frequency.value=190; env(g2,t,.4,.1); o.connect(g2); g2.connect(out); o.start(t); o.stop(t+.12); } };
+  const hat = (t,v,open) => { const s=off.createBufferSource(); s.buffer=noise; const f=off.createBiquadFilter(); f.type='highpass'; f.frequency.value=7500;
+    const g=off.createGain(); env(g,t,v,open?.22:.045); s.connect(f); f.connect(g); g.connect(out); s.start(t); s.stop(t+.25); };
+  const pad = (t,d,notes,vol=.045,cut=1400) => notes.forEach(m => { const o=off.createOscillator(), f=off.createBiquadFilter(), g=off.createGain(); o.type='sawtooth'; o.frequency.value=mtof(m); o.detune.value=(Math.random()-.5)*14;
+    f.type='lowpass'; f.frequency.value=cut; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+.25); g.gain.setValueAtTime(vol,t+d-.25); g.gain.linearRampToValueAtTime(0,t+d);
+    o.connect(f); f.connect(g); g.connect(out); o.start(t); o.stop(t+d); });
+  const bass808 = (t,d,m,glide) => { const o=off.createOscillator(), sh=off.createWaveShaper(), g=off.createGain(); o.frequency.setValueAtTime(mtof(m-24)*(glide?1.5:1),t); if(glide) o.frequency.exponentialRampToValueAtTime(mtof(m-24),t+.08);
+    sh.curve = driveCurve(.08); g.gain.setValueAtTime(.7,t); g.gain.setTargetAtTime(0,t+d*.7,d*.15); o.connect(sh); sh.connect(g); g.connect(out); o.start(t); o.stop(t+d+.2); };
+  const bass = (t,d,m) => { const o=off.createOscillator(), g=off.createGain(); o.type='sine'; o.frequency.value=mtof(m-24); env(g,t,.45,d); o.connect(g); g.connect(out); o.start(t); o.stop(t+d); };
+  const pluck = (t,m,v=.12) => { const o=off.createOscillator(), f=off.createBiquadFilter(), g=off.createGain(); o.type='triangle'; o.frequency.value=mtof(m); f.type='lowpass'; f.frequency.value=3000; env(g,t,v,.35); o.connect(f); f.connect(g); g.connect(out); o.start(t); o.stop(t+.4); };
+  for(let b=0;b<bars;b++){
+    const bt = b*beat*4;
+    if(style==='trap'){
+      const ch = [[57,60,64],[53,57,60],[55,58,62],[52,55,59]][b];
+      kick(bt); kick(bt+beat*1.75,.8); if(b%2) kick(bt+beat*2.5,.8);
+      snare(bt+beat*2,.75,true);
+      for(let h=0;h<16;h++){ const t=bt+h*beat/4; if(b===3 && h>=12){ for(let r=0;r<3;r++) hat(t+r*beat/12,.18); } else hat(t, h%2?.12:.22); }
+      hat(bt+beat*3.5,.2,true);
+      bass808(bt, beat*1.7, ch[0], b>0); bass808(bt+beat*2.5, beat*1.4, ch[0]);
+      pad(bt, beat*4, ch, .035, 900);
+      [0,3,7,12].forEach((iv,i)=>pluck(bt+i*beat*.75, ch[0]+12+iv, .07));
+    } else if(style==='boombap'){
+      const ch = [[57,60,64,67],[50,53,57,60],[55,59,62,65],[48,52,55,59]][b];
+      const sw = beat/2*.12;
+      kick(bt); kick(bt+beat*1.5+sw,.85); kick(bt+beat*2.75,.6);
+      snare(bt+beat,.75); snare(bt+beat*3,.75);
+      for(let h=0;h<8;h++) hat(bt+h*beat/2+(h%2?sw:0), h%2?.14:.26);
+      pad(bt, beat*4, ch, .03, 1100); bass(bt, beat*1.5, ch[0]); bass(bt+beat*2, beat*1.5, ch[1]-12+12);
+    } else if(style==='khaleeji'){
+      const ch = [[57,60,64],[55,58,62],[53,57,60],[52,55,59]][b];
+      // khaleeji-style syncopated pattern (dum-tak) with claps
+      [0,1.5,2.5].forEach(x=>kick(bt+beat*x,.9));
+      [1,3].forEach(x=>snare(bt+beat*x,.6,true)); snare(bt+beat*3.5,.45,true);
+      for(let h=0;h<8;h++) hat(bt+h*beat/2, h%2?.1:.18);
+      bass(bt, beat*1.4, ch[0]); bass(bt+beat*1.5, beat, ch[0]); bass(bt+beat*2.5, beat*1.4, ch[0]);
+      [0,1,3,4,7,8,7,4].forEach((iv,i)=>pluck(bt+i*beat/2, ch[0]+12+[0,1,4,5,7,8,7,5][i], .09));
+    } else {
+      const ch = [[57,60,64],[53,57,60],[48,52,55],[55,59,62]][b];
+      kick(bt); kick(bt+beat*2); kick(bt+beat*2.5);
+      snare(bt+beat); snare(bt+beat*3);
+      for(let h=0;h<8;h++) hat(bt+h*beat/2, h%2?.18:.3);
+      pad(bt, beat*4, ch); bass(bt, beat*2, ch[0]); bass(bt+beat*2, beat*2, ch[0]);
+    }
+  }
+  return off.startRendering();
+}
+const BEAT_NAME = 'البيت / اللحن';
+function beatTarget(name){
+  return tracks.find(t => t.name===BEAT_NAME && !t.clips.length)
+      || tracks.find(t => !t.clips.length && t.kind!=='piano' && !VOCAL_NAMES.includes(t.name))
+      || addTrack(name);
+}
+async function makeDemoBeat(style, bpm){
+  ensureCtx();
+  style = style || ($('#beatStyle') ? $('#beatStyle').value : 'pop');
+  if(bpm){ S.bpm = bpm; $('#bpm').value = bpm; onBpmChange(); }
+  showModal('جاري توليد إيقاع '+BEAT_STYLES[style]+'…');
+  const buf = await renderBeat(style, S.bpm, ctx.sampleRate);
+  hideModal();
+  pushUndo();
+  const t = beatTarget('بيت '+BEAT_STYLES[style]);
+  addClip(t, buf, S.playhead, 'بيت '+BEAT_STYLES[style]+' '+S.bpm+' BPM');
+  renderTracks(); renderPanel();
+  toast('تم توليد بيت '+BEAT_STYLES[style]+' — 4 مازورات على '+S.bpm+' BPM');
+  return t;
+}
+
+/* =========================================================
+   VOCAL LAYERS (double / harmony / octave)
+   ========================================================= */
+function harmonyMap(at, steps){
+  const sc = AT_SCALES[at.scale] || AT_SCALES['مينور (Minor)'], L = sc.length;
+  return m => {
+    const q = atQuantize(m, at.key, sc), rel = q - at.key; let oct = Math.floor(rel/12); const w = rel - oct*12;
+    let idx = 0, bd = 99; sc.forEach((d,i) => { if(Math.abs(d-w)<bd){ bd=Math.abs(d-w); idx=i; } }); if(Math.abs(w-12)<bd) { idx = 0; oct++; }
+    let i2 = idx + steps; oct += Math.floor(i2/L); i2 = ((i2%L)+L)%L;
+    return at.key + oct*12 + sc[i2];
+  };
+}
+async function makeLayer(src, type){
+  if(!src || !src.clips.length) return null;
+  const spec = {
+    double:  [{name:'دبل', map:m=>m+.09, delay:.019, vol:-8, pan:-.55}, {name:'دبل 2', map:m=>m-.09, delay:.028, vol:-8, pan:.55}],
+    harmony: [{name:'هارموني', map:harmonyMap(src.at, 2), delay:.008, vol:-9, pan:.3, fx:{hpOn:true,hp:180,revMix:.28,revSize:2.6}}],
+    harmony2:[{name:'هارموني', map:harmonyMap(src.at, 2), delay:.008, vol:-9, pan:.35, fx:{hpOn:true,hp:180,revMix:.28,revSize:2.6}},
+              {name:'كورال', map:harmonyMap(src.at, -3), delay:.014, vol:-11, pan:-.35, fx:{hpOn:true,hp:120,revMix:.3,revSize:2.6}}],
+    octave:  [{name:'طبقة عميقة', map:m=>m-12, delay:.004, vol:-11, pan:0, fx:{lpOn:true,lp:3500,drive:.08}}],
+  }[type];
+  showModal('جاري صنع الطبقات الصوتية…');
+  await new Promise(r=>setTimeout(r,30));
+  pushUndo();
+  const made = [];
+  for(const sp of spec){
+    let dst = tracks.find(t => t.name===sp.name && !t.clips.length && t!==src) || addTrack(sp.name);
+    dst.vol = sp.vol; dst.pan = sp.pan; dst.fx = Object.assign({}, src.fx, {delayMix:src.fx.delayMix*.5, geq:(src.fx.geq||[0,0,0,0,0,0]).slice()}, sp.fx||{}); dst.preset = 'مخصص';
+    if(dst.n){ applyFx(dst.n, dst.fx, ctx); setVolPan(dst.n, dst, isAudible(dst)); }
+    for(const c of src.clips){
+      const x = clipMono(c), sr = c.buffer.sampleRate;
+      const y = atProcess(x, sr, {tune:false, key:src.at.key, scale:src.at.scale, speed:.03, amount:1, shift:0}, sp.map);
+      const b = new AudioBuffer({numberOfChannels:1, length:y.length, sampleRate:sr}); b.copyToChannel(y,0);
+      const nc = addClip(dst, b, c.start + sp.delay, sp.name+' · '+c.name); nc.gain = c.gain;
+      await new Promise(r=>setTimeout(r,0));
+    }
+    made.push(sp.name);
+  }
+  hideModal(); renderTracks(); renderPanel();
+  return made;
+}
+
+/* =========================================================
+   AUDIO ANALYSIS  (band profile, loudness, noise, BPM)
+   ========================================================= */
+function trackMono(t, maxSec=90){
+  if(!t.clips.length) return null;
+  const sr = t.clips[0].buffer.sampleRate;
+  const parts = t.clips.slice().sort((a,b)=>a.start-b.start).map(c => { const x = clipMono(c); if(c.gain!==1) for(let i=0;i<x.length;i++) x[i]*=c.gain; return x; });
+  const total = Math.min(parts.reduce((a,p)=>a+p.length,0), sr*maxSec), x = new Float32Array(total); let o = 0;
+  for(const p of parts){ if(o>=total) break; x.set(p.subarray(0, total-o), o); o += p.length; }
+  return {x, sr};
+}
+async function analyzeAudio(x, sr){
+  const len = Math.min(x.length, sr*90), NB = GEQ_F.length;
+  const off = new OfflineAudioContext(NB+1, len, sr);
+  const b = off.createBuffer(1, len, sr); b.copyToChannel(x.subarray(0,len), 0);
+  const s = off.createBufferSource(); s.buffer = b;
+  const mg = off.createChannelMerger(NB+1);
+  GEQ_F.forEach((f,i) => { const bp = off.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=f; bp.Q.value=1.2; s.connect(bp); bp.connect(mg,0,i); });
+  s.connect(mg,0,NB);
+  try{ off.destination.channelCount = NB+1; off.destination.channelInterpretation = 'discrete'; }catch(e){}
+  mg.connect(off.destination); s.start();
+  const r = await off.startRendering();
+  const full = r.getChannelData(NB), F = 2048, frames = [];
+  let peak = 0;
+  for(let i=0;i+F<=len;i+=F){ let e=0; for(let j=0;j<F;j++){ const v=full[i+j]; e+=v*v; if(Math.abs(v)>peak) peak=Math.abs(v); } frames.push(Math.sqrt(e/F)); }
+  if(!frames.length) return null;
+  const fmax = Math.max(...frames), gate = fmax*Math.pow(10,-30/20);
+  const act = frames.map((v,i)=>v>gate?i:-1).filter(i=>i>=0);
+  const sorted = frames.slice().sort((a,b)=>a-b);
+  const noise = sorted[Math.floor(sorted.length*.08)] || 1e-9;
+  const eBand = new Array(NB+1).fill(0);
+  for(let ch=0; ch<=NB; ch++){ const d = r.getChannelData(ch); let e=0; act.forEach(fi => { for(let j=0;j<F;j++){ const v=d[fi*F+j]; e+=v*v; } }); eBand[ch] = e/(act.length*F); }
+  const rmsDb = 10*Math.log10(eBand[NB]+1e-12);
+  return {
+    bands: GEQ_F.map((_,i) => 10*Math.log10(eBand[i]+1e-12) - rmsDb),
+    rmsDb, peakDb: 20*Math.log10(peak+1e-9), noiseDb: 20*Math.log10(noise+1e-9),
+    activeRatio: act.length/frames.length
+  };
+}
+function detectBPM(x, sr){
+  const hop = Math.round(sr/100), n = Math.floor(x.length/hop), e = new Float32Array(n);
+  for(let i=0;i<n;i++){ let s=0; for(let j=0;j<hop;j++){ const v=x[i*hop+j]; s+=v*v; } e[i]=Math.log(1e-6+Math.sqrt(s/hop)); }
+  const on = new Float32Array(n); for(let i=1;i<n;i++) on[i] = Math.max(0, e[i]-e[i-1]);
+  const maxLag = 6000/60*4+2, ac = new Float32Array(Math.ceil(maxLag)+2);
+  for(let lag=1; lag<ac.length && lag<n; lag++){ let s=0; for(let i=0;i+lag<n;i++) s += on[i]*on[i+lag]; ac[lag] = s/(n-lag); }
+  const acAt = l => { const a = Math.floor(l), f = l-a; return a+1<ac.length ? ac[a]*(1-f)+ac[a+1]*f : 0; };
+  let best = 0, bb = 0;
+  for(let bpm=78; bpm<=170; bpm+=.5){
+    const L = 6000/bpm, sc = acAt(L) + acAt(2*L) + acAt(4*L) + .5*acAt(3*L);
+    if(sc > best){ best = sc; bb = bpm; }
+  }
+  return bb ? Math.round(bb) : null;
+}
+function voiceInfo(x, sr){
+  const d = atDetect(x.length > sr*30 ? x.subarray(0, sr*30) : x, sr), v = d.f0.filter(f=>f>0).sort((a,b)=>a-b);
+  if(v.length < 10) return null;
+  return {med: v[v.length>>1], lo: v[Math.floor(v.length*.1)], hi: v[Math.floor(v.length*.9)]};
+}
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+async function autoMix(t){
+  const m = trackMono(t); if(!m) return null;
+  const A = await analyzeAudio(m.x, m.sr); if(!A) return null;
+  const vi = voiceInfo(m.x, m.sr), fx = t.fx, notes = [], B = A.bands;
+  fx.geq = fx.geq ? fx.geq.slice() : [0,0,0,0,0,0];
+  if(vi){
+    const male = vi.med < 165;
+    notes.push(`🎙 طبقة صوتك: ${male?'رجالي':'نسائي/حاد'} (متوسط ${Math.round(vi.med)} Hz)`);
+    fx.hpOn = true; fx.hp = Math.round(clamp(vi.lo*.55, 60, 160));
+    notes.push(`قصّيت الترددات تحت ${fx.hp} Hz (ما تحتاجها في صوتك)`);
+  } else { fx.hpOn = true; fx.hp = 90; }
+  if(B[0] - B[1] > -3){ fx.geq[0] = -4; fx.hp = Math.max(fx.hp, 100); notes.push('شلت الهمهمة المنخفضة (هواء/مكيف/لمس المايك)'); }
+  if(B[1] - B[2] > 2){ fx.geq[1] = -clamp(B[1]-B[2], 2, 5); notes.push('خففت الكتمة (الصوت المكتوم في 250 Hz)'); }
+  if(B[3] - B[2] > -1){ fx.geq[3] = -2; notes.push('خففت الحدة في الترددات الوسطى العالية'); }
+  else if(B[3] < B[2] - 9){ fx.geq[3] = 2.5; notes.push('زدت الوضوح (Presence) عشان الكلام يبان'); }
+  if(B[4] - B[3] > -3){ fx.geq[4] = -3; notes.push('خففت حروف السين والشين (De-ess)'); }
+  if(B[5] < B[3] - 20){ fx.geq[5] = 3; notes.push('أضفت لمعة (Air) للصوت'); }
+  if(A.noiseDb > -52 && A.activeRatio < .95){ fx.lpOn = true; fx.lp = 13000; fx.hp = Math.max(fx.hp, 110); notes.push(`فيه ضوضاء خلفية (${Math.round(A.noiseDb)} dB) — خففتها بالفلاتر`); }
+  const crest = A.peakDb - A.rmsDb;
+  fx.compOn = true; fx.th = Math.round(clamp(A.rmsDb + 3, -40, -8)); fx.ratio = crest > 20 ? 5 : crest > 14 ? 3.5 : 2.5;
+  notes.push(`ضبطت الضاغط (${fx.th} dB · ${fx.ratio}:1) عشان الصوت يكون ثابت`);
+  t.vol = Math.round(clamp(-18 - A.rmsDb, -12, 12)*2)/2;
+  notes.push(`عدّلت المستوى ${t.vol>0?'+':''}${t.vol} dB (كان ${Math.round(A.rmsDb)} dB RMS)`);
+  if(fx.revMix < .05){ fx.revMix = .12; fx.revSize = 1.8; notes.push('أضفت مساحة خفيفة (Reverb) عشان الصوت ما يكون جاف'); }
+  return notes;
+}
+async function matchReference(t, ref){
+  const m = trackMono(t); if(!m) return null;
+  const A = await analyzeAudio(m.x, m.sr); if(!A) return null;
+  const fx = t.fx; fx.geq = [0,0,0,0,0,0];
+  const out = [];
+  for(let i=1;i<GEQ_F.length;i++){
+    const d = clamp((ref.A.bands[i] - A.bands[i]) * .55, -6, 6);
+    fx.geq[i] = Math.round(d*2)/2;
+    if(Math.abs(fx.geq[i]) >= 1) out.push(`${GEQ_L[i]} Hz: ${fx.geq[i]>0?'+':''}${fx.geq[i]} dB`);
+  }
+  fx.hpOn = true; fx.hp = Math.max(fx.hp||80, 90);
+  const refCrest = ref.A.peakDb - ref.A.rmsDb;
+  fx.compOn = true; fx.ratio = refCrest < 12 ? 5 : 3; fx.th = Math.round(clamp(A.rmsDb + (refCrest<12 ? 0 : 4), -40, -8));
+  return out;
+}
+
+/* =========================================================
+   SMART ASSISTANT — Arabic intent engine
+   ========================================================= */
+const VOCAL_NAMES = ['الصوت الرئيسي','دبل','دبل 2','هارموني','أدليبز','كورال'];
+const norm = s => String(s).toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[،,.!؟?]/g,' ');
+const PREFIXES = ['وال','بال','فال','لل','ال','و','ب','ف','ل'];
+function tokens(text){ return norm(text).split(/\s+/).filter(Boolean); }
+function hasWord(text, toks, words){
+  return words.some(w => {
+    w = norm(w);
+    if(w.includes(' ')) return text.includes(w);
+    return toks.some(tk => { if(tk===w || (w.length>=4 && tk.startsWith(w))) return true;
+      for(const p of PREFIXES) if(tk.startsWith(p)){ const r = tk.slice(p.length); if(r===w || (w.length>=4 && r.startsWith(w))) return true; }
+      return false; });
+  });
+}
+const addGeq = (fx, arr, k) => { fx.geq = (fx.geq||[0,0,0,0,0,0]).map((v,i) => clamp(v + (arr[i]||0)*k, -12, 12)); };
+const setEcho = (fx, name, k=1) => { const p = ECHO_PRESETS[name]; Object.assign(fx, p); if(p.delayMix) fx.delayMix = clamp(p.delayMix*k, 0, .7); };
+const INTENTS = [
+  // ---- styles (start from a clean chain)
+  {id:'soft', kind:'style', label:'صوت ناعم', words:['ناعم','نعومه','ينعم','نعمه','نعمي','نعمها','smooth','soft','هادي','رايق','رومانسي','حنون'],
+    run:(fx,k,x)=>{ fx.hpOn=true; fx.hp=90; fx.low+=1.5*k; addGeq(fx,[0,-1,0,-2,-3,-1],k); fx.compOn=true; fx.th=-20; fx.ratio=3; fx.revMix=.2*k; fx.revSize=2.2; setEcho(fx,'صدى إيقاعي 1/4',.4*k); }},
+  {id:'warm', kind:'style', label:'صوت دافئ', words:['دافي','دافئ','دافيء','دفء','دفا','warm'],
+    run:(fx,k)=>{ fx.hpOn=true; fx.hp=80; fx.low+=3*k; addGeq(fx,[0,1.5,0,0,-2,-1],k); fx.drive=.06*k; fx.compOn=true; fx.th=-20; fx.ratio=3; fx.revMix=Math.max(fx.revMix,.15); fx.revSize=2; }},
+  {id:'rough', kind:'style', label:'صوت خشن وقوي', words:['خشن','خشونه','وحش','قوي','عنيف','غاضب','شرس','حماسي','aggressive','gritty','rough','harsh'],
+    run:(fx,k)=>{ fx.hpOn=true; fx.hp=120; fx.drive=clamp(.22*k,0,.6); fx.compOn=true; fx.th=-28; fx.ratio=6; addGeq(fx,[0,-1,2,4,1,0],k); fx.revMix=.05; fx.revSize=1; }},
+  {id:'rap', kind:'style', label:'صوت راب', words:['راب','rap','هيب','hiphop','هيب هوب','رابر'],
+    run:(fx,k)=>{ fx.hpOn=true; fx.hp=110; fx.compOn=true; fx.th=-26; fx.ratio=6; addGeq(fx,[0,-2,1,3,2,1],k); fx.drive=Math.max(fx.drive,.05*k); fx.revMix=.07; fx.revSize=1; setEcho(fx,'صدى راب (آخر الكلمة)',k); }},
+  {id:'trap', kind:'style', label:'صوت تراب', words:['تراب','trap','ترافيس','travis'],
+    run:(fx,k,x)=>{ INTENTS.find(i=>i.id==='rap').run(fx,1,x); setEcho(fx,'بينغ بونغ ستيريو',.6*k); fx.revMix=.15; fx.revSize=1.8; x.at.tune=true; x.at.speed=0; x.at.amount=1; }},
+  {id:'drill', kind:'style', label:'صوت دريل', words:['دريل','drill'],
+    run:(fx,k,x)=>{ INTENTS.find(i=>i.id==='rough').run(fx,.7,x); fx.delaySync='1/8'; fx.delayMix=.12; fx.delayFb=.25; fx.delayPP=true; }},
+  {id:'radio', kind:'style', label:'صوت إذاعي', words:['اذاعه','اذاعي','بودكاست','podcast','مذيع','مقدم','تعليق صوتي'],
+    run:(fx,k)=>{ Object.assign(fx, PRESETS['إذاعي عميق']); addGeq(fx,[0,-1,0,2,0,1],k); }},
+  {id:'oldradio', kind:'style', label:'راديو قديم', words:['راديو','vintage','قديم','فينتج'], run:(fx)=>Object.assign(fx, PRESETS['راديو قديم'])},
+  {id:'phone', kind:'style', label:'صوت تلفون', words:['تلفون','تليفون','جوال','هاتف','phone','مكالمه'], run:(fx)=>Object.assign(fx, PRESETS['تلفون'])},
+  {id:'lofi', kind:'style', label:'لو-فاي', words:['لو فاي','لوفاي','lofi','lo-fi'], run:(fx)=>Object.assign(fx, PRESETS['لو-فاي'])},
+  {id:'epic', kind:'style', label:'صوت فخم', words:['فخم','ضخم','فخامه','epic','سينمائي','عظيم','قوي جدا'],
+    run:(fx,k)=>{ fx.hpOn=true; fx.hp=90; fx.low+=2*k; addGeq(fx,[0,0,0,1.5,1,1.5],k); fx.compOn=true; fx.th=-22; fx.ratio=3; fx.revMix=.35*k; fx.revSize=3.5; setEcho(fx,'صدى ستاد',.6); fx.revMix=.35*k; }},
+  {id:'shilat', kind:'style', label:'صوت شيلات', words:['شيلات','شيله','شيلا','شيلات','شيلتي'],
+    run:(fx,k,x)=>{ fx.hpOn=true; fx.hp=100; fx.compOn=true; fx.th=-24; fx.ratio=4; addGeq(fx,[0,-1,1,2,1,1],k); setEcho(fx,'صدى شيلات',k); x.at.tune=true; x.at.speed=.04; x.at.amount=1; }},
+  {id:'tarab', kind:'style', label:'صوت طربي', words:['طرب','طربي','موال','عود','اصيل','كلاسيكي','سلطنه'],
+    run:(fx,k)=>{ fx.hpOn=true; fx.hp=80; fx.low+=2*k; addGeq(fx,[0,1,0,1,-1,0],k); fx.compOn=true; fx.th=-18; fx.ratio=2.5; fx.revMix=.3*k; fx.revSize=3; setEcho(fx,'سلاب باك (قصير)',.6); }},
+  {id:'nasheed', kind:'style', label:'صوت نشيد', words:['نشيد','اناشيد','انشوده','انشاد','ابتهال','مقرئ','قران','تلاوه','اذان'],
+    run:(fx,k)=>{ fx.hpOn=true; fx.hp=80; fx.low+=1.5; addGeq(fx,[0,-1,0,1.5,0,1],k); fx.compOn=true; fx.th=-20; fx.ratio=3; fx.revMix=.38*k; fx.revSize=3.4; }},
+  {id:'pop', kind:'style', label:'صوت بوب', words:['بوب','pop'],
+    run:(fx,k,x)=>{ Object.assign(fx, PRESETS['فوكال احترافي']); x.at.tune=true; x.at.speed=.15; x.at.amount=.75; }},
+  {id:'clean', kind:'style', label:'صوت طبيعي نظيف', words:['طبيعي','نظيف','بدون مؤثرات','natural','clean','جاف','dry','خام'],
+    run:(fx,k,x)=>{ fx.hpOn=true; fx.hp=80; x.at.tune=false; x.at.shift=0; }},
+  // ---- modifiers
+  {id:'clear', kind:'mod', label:'وضوح', words:['واضح','وضوح','صافي','clear','نقي','يبان'], run:(fx,k)=>{ fx.hpOn=true; fx.hp=Math.max(fx.hp,100); addGeq(fx,[0,-2,0,2,1.5,1],k); }},
+  {id:'bright', kind:'mod', label:'لمعة', words:['لمعه','لامع','bright','حيويه','حي'], run:(fx,k)=>addGeq(fx,[0,0,0,1,1,3],k)},
+  {id:'noecho', kind:'mod', label:'إزالة الصدى', words:['بدون صدى','بلا صدى','شيل الصدى','احذف الصدى','بدون ايكو'], run:(fx)=>{ fx.delayMix=0; }},
+  {id:'norev', kind:'mod', label:'إزالة الريفيرب', words:['بدون ريفيرب','بلا ريفيرب','شيل الريفيرب','بدون قاعه'], run:(fx)=>{ fx.revMix=0; }},
+  {id:'echo', kind:'mod', label:'صدى', words:['صدى','صدي','ايكو','echo','دلاي','delay'], run:(fx,k)=>{ if(fx.delayMix<.05) setEcho(fx,'صدى إيقاعي 1/4',k); else fx.delayMix=clamp(fx.delayMix*(k>=1?1.5:.6),0,.7); }},
+  {id:'pingpong', kind:'mod', label:'بينغ بونغ', words:['بينغ','بونغ','ping','ستيريو','stereo'], run:(fx,k)=>setEcho(fx,'بينغ بونغ ستيريو',k)},
+  {id:'reverb', kind:'mod', label:'ريفيرب/مساحة', words:['ريفيرب','ريفرب','reverb','قاعه','مسجد','كنيسه','مساحه','حمام','كهف'], run:(fx,k)=>{ fx.revMix=clamp(Math.max(fx.revMix,.2)*1.6*k,0,.8); fx.revSize=3.5; }},
+  {id:'noise', kind:'mod', label:'إزالة الضوضاء', words:['ضوضاء','ضجيج','تشويش','هسهسه','noise','خشخشه'], run:(fx)=>{ fx.hpOn=true; fx.hp=Math.max(fx.hp,120); fx.lpOn=true; fx.lp=13000; addGeq(fx,[-3,0,0,0,0,-3],1); }},
+  {id:'autotune', kind:'mod', label:'أوتوتون', words:['اوتوتون','اوتو تون','اوتو','autotune','auto-tune','تيون','tune'], run:(fx,k,x)=>{ x.at.tune=true; x.at.speed=Math.min(x.at.speed,.06); x.at.amount=1; }},
+  {id:'robot', kind:'mod', label:'أوتوتون روبوتي', words:['روبوت','روبوتي','تي بين','tpain','t-pain','تيبين'], run:(fx,k,x)=>{ x.at.tune=true; x.at.speed=0; x.at.amount=1; }},
+  {id:'deep', kind:'mod', label:'صوت أعمق', words:['عميق','غليظ','تخين','ثخين','deep','اغلظ','اعمق'], run:(fx,k,x)=>{ x.at.shift=clamp(Math.round(-2*k),-7,0); fx.low+=1.5; }},
+  {id:'high', kind:'mod', label:'صوت أرفع', words:['رفيع','طفل','سنجاب','chipmunk','بنوته','ارفع طبقه'], run:(fx,k,x)=>{ x.at.shift=clamp(Math.round(4*k),0,9); }},
+  {id:'louder', kind:'mod', label:'رفع المستوى', words:['ارفع الصوت','علي الصوت','اعلى','louder','زود الصوت'], run:(fx,k,x)=>{ x.vol=clamp(x.vol+3*k,-60,6); }},
+  {id:'quieter', kind:'mod', label:'خفض المستوى', words:['اخفض','وطي','واطي','quieter','نزل الصوت','قلل الصوت'], run:(fx,k,x)=>{ x.vol=clamp(x.vol-3*k,-60,6); }},
+];
+const ACT_WORDS = {
+  double:['دبل','double','دبلنج','تضخيم','دوبل'],
+  harmony:['هارموني','harmony','تناغم','طبقات','كورس','كورال','اصوات اضافيه','صوت ثاني'],
+  octave:['اوكتاف','octave','صوت تحت'],
+  beatVerb:['سوي','سو','اعمل','ولد','انشئ','make','اصنع','ابي','ابغى','ابغي','اضف','حط','جيب','generate'],
+  beat:['بيت','beat','ايقاع','بيتات','ميوزك','موسيقى','لحن'],
+  auto:['حلل','تحليل','analyze','صلح','اصلح','تلقائي','اوتوماتيك','ميكس','mix','ماستر','ظبط','اضبط','حسن'],
+  matchRef:['طابق','مطابقه','زي المثال','نفس المثال','مثل المثال','match'],
+};
+const LIGHT = ['شوي','شويه','خفيف','قليل','بسيط','شوية','حبه','شوي شوي'];
+const STRONG = ['مره','مرا','جدا','كثير','حيل','وايد','بقوه','مرررره','قوي جدا','بزياده','اكثر','زياده'];
+const MAQAM_WORDS = {'حجاز':'مقام حجاز','نهاوند':'مقام نهاوند','كرد':'مقام كرد','بياتي':'مقام بياتي (ربع تون)','راست':'مقام راست (ربع تون)','صبا':'مقام صبا (ربع تون)','ماجور':'ماجور (Major)','major':'ماجور (Major)','مينور':'مينور (Minor)','minor':'مينور (Minor)','بنتاتونيك':'بنتاتونيك'};
+
+const AI = { log:[], history:[], ref:null };
+function aiSay(role, html){ AI.log.push({role, html}); renderAiLog(); }
+function snapshotTrack(t){ return {t, fx:JSON.parse(JSON.stringify(t.fx)), at:{...t.at}, vol:t.vol, pan:t.pan, preset:t.preset}; }
+function aiUndo(){
+  const h = AI.history.pop(); if(!h) return aiSay('ai','ما فيه تعديل ذكي أتراجع عنه.');
+  const t = h.t; t.fx = h.fx; t.at = h.at; t.vol = h.vol; t.pan = h.pan; t.preset = h.preset;
+  if(t.n){ applyFx(t.n, t.fx, ctx); setVolPan(t.n, t, isAudible(t)); }
+  renderTracks(); renderPanel(); aiSay('ai','↶ رجّعت إعدادات «'+escapeHtml(t.name)+'» مثل ما كانت.');
+}
+function describeDiff(b, t){
+  const a = t.fx, o = [], fmt = v => (v>0?'+':'')+(+v).toFixed(1);
+  if(b.fx.hpOn!==a.hpOn || (a.hpOn && b.fx.hp!==a.hp)) o.push(a.hpOn ? `قص المنخفض ${Math.round(a.hp)} Hz` : 'إيقاف قص المنخفض');
+  if(b.fx.lpOn!==a.lpOn || (a.lpOn && b.fx.lp!==a.lp)) o.push(a.lpOn ? `قص العالي ${Math.round(a.lp/100)/10} kHz` : 'إيقاف قص العالي');
+  if(b.fx.low!==a.low) o.push('الباص '+fmt(a.low)+' dB');
+  if(b.fx.high!==a.high) o.push('العالي '+fmt(a.high)+' dB');
+  const g = (a.geq||[]).map((v,i)=>v!==((b.fx.geq||[])[i]||0) && Math.abs(v)>=.5 ? GEQ_L[i]+' '+fmt(v) : null).filter(Boolean);
+  if(g.length) o.push('EQ ذكي: '+g.join('، '));
+  if(b.fx.drive!==a.drive) o.push(a.drive>0 ? 'خشونة/تشويه '+Math.round(a.drive*100)+'%' : 'إزالة التشويه');
+  if(b.fx.compOn!==a.compOn || b.fx.th!==a.th || b.fx.ratio!==a.ratio) o.push(a.compOn ? `ضاغط ${a.th} dB · ${a.ratio}:1` : 'إيقاف الضاغط');
+  if(b.fx.delayMix!==a.delayMix || b.fx.delaySync!==a.delaySync || b.fx.delayPP!==a.delayPP) o.push(a.delayMix>0 ? `صدى ${SYNC_OPTS[a.delaySync||'free'].split(' ')[0]}${a.delayPP?' بينغ بونغ':''} ${Math.round(a.delayMix*100)}%` : 'بدون صدى');
+  if(b.fx.revMix!==a.revMix || b.fx.revSize!==a.revSize) o.push(a.revMix>0 ? `ريفيرب ${Math.round(a.revMix*100)}% (قاعة ${a.revSize}s)` : 'بدون ريفيرب');
+  if(b.at.tune!==t.at.tune || b.at.speed!==t.at.speed || b.at.amount!==t.at.amount) o.push(t.at.tune ? `أوتوتون ${t.at.speed<.02?'روبوتي':'طبيعي'} · ${AT_KEYS[t.at.key].split(' ')[0]} ${t.at.scale}` : 'إيقاف الأوتوتون');
+  if(b.at.shift!==t.at.shift) o.push('طبقة الصوت '+(t.at.shift>0?'+':'')+t.at.shift+' نصف تون');
+  if(b.vol!==t.vol) o.push('المستوى '+fmt(t.vol)+' dB');
+  return o;
+}
+function aiTarget(text, toks){
+  if(hasWord(text, toks, ['البيت','اللحن','الموسيقى','الايقاع'])){ const b = tracks.find(t=>t.name===BEAT_NAME); if(b && !hasWord(text,toks,['سوي','اعمل','ولد','اصنع','ابي','ابغى'])) return b; }
+  if(S.sel) return S.sel;
+  return tracks.find(t=>t.name==='الصوت الرئيسي') || tracks[0];
+}
+async function aiRun(raw){
+  raw = (raw||'').trim(); if(!raw) return;
+  ensureCtx();
+  aiSay('user', escapeHtml(raw));
+  const text = ' '+norm(raw)+' ', toks = tokens(raw);
+  let k = 1; if(hasWord(text,toks,LIGHT)) k = .55; if(hasWord(text,toks,STRONG)) k = 1.5;
+  const t = aiTarget(text, toks);
+  const done = [];
+  // --- beat generation
+  if(hasWord(text,toks,ACT_WORDS.beat) && hasWord(text,toks,ACT_WORDS.beatVerb) && !hasWord(text,toks,['صوتي','الصوت','صوت'])){
+    let style = 'pop';
+    if(hasWord(text,toks,['تراب','trap','دريل','drill'])) style='trap';
+    else if(hasWord(text,toks,['بوم','boom','قديم','olds','كلاسيك'])) style='boombap';
+    else if(hasWord(text,toks,['خليجي','خليجيه','سعودي','شعبي','khaleeji','دق','طق'])) style='khaleeji';
+    const num = (raw.match(/\d{2,3}/)||[])[0]; let bpm = num ? clamp(+num,50,200) : ({trap:140,boombap:88,khaleeji:100,pop:100}[style]);
+    const bt = await makeDemoBeat(style, bpm);
+    aiSay('ai', `🥁 سويت لك بيت <b>${BEAT_STYLES[style]}</b> على <b>${bpm} BPM</b> في مسار «${escapeHtml(bt.name)}». اضغط <kbd>R</kbd> وسجّل فوقه.`);
+    return;
+  }
+  // --- reference match
+  if(hasWord(text,toks,ACT_WORDS.matchRef)){
+    if(!AI.ref){ aiSay('ai','ارفع أغنية مثال أولاً من زر «🎧 أعطه أغنية مثال»، وبعدها أطابق صوتك معها.'); return; }
+    return aiMatch(t);
+  }
+  // --- auto mix (analysis)
+  const wantsAuto = hasWord(text,toks,['حلل','تحليل','analyze','تلقائي','اوتوماتيك']);
+  const before = snapshotTrack(t);
+  const x = {at:t.at, vol:t.vol};
+  const matched = INTENTS.filter(it => hasWord(text, toks, it.words));
+  // negations remove positive echo/reverb
+  const ids = new Set(matched.map(m=>m.id));
+  if(ids.has('noecho')) ids.delete('echo'); if(ids.has('norev')) ids.delete('reverb');
+  if(ids.has('trap')) ids.delete('rap'); if(ids.has('robot')) ids.delete('autotune');
+  if(ids.has('epic')) ids.delete('rough');
+  const its = INTENTS.filter(it => ids.has(it.id));
+  // maqam / key
+  let maqam = null; for(const [w,sc] of Object.entries(MAQAM_WORDS)) if(hasWord(text,toks,[w])) maqam = sc;
+  const km = raw.match(/\b([A-Ga-g])\s?(#|b|♯|♭)?\s?(m|min|minor|maj|major)?\b/);
+  let keyIdx = null; if(km){ const base = {c:0,d:2,e:4,f:5,g:7,a:9,b:11}[km[1].toLowerCase()]; keyIdx = (base + (km[2]==='#'||km[2]==='♯'?1:km[2]==='b'||km[2]==='♭'?-1:0) + 12)%12; if(km[3]) maqam = /^m(in)?/.test(km[3]) && !/maj/.test(km[3]) ? 'مينور (Minor)' : 'ماجور (Major)'; }
+  const wantDouble = hasWord(text,toks,ACT_WORDS.double), wantHarm = hasWord(text,toks,ACT_WORDS.harmony), wantOct = hasWord(text,toks,ACT_WORDS.octave);
+  if(!its.length && !wantsAuto && !wantDouble && !wantHarm && !wantOct && !maqam && keyIdx===null){
+    if(hasWord(text,toks,ACT_WORDS.auto)) return aiAuto(t);
+    aiSay('ai', 'ما فهمت بالضبط 🤔 جرّب تكتب مثلاً: <i>«صوت راب خشن»</i>، <i>«خلّه ناعم ودافئ مع صدى»</i>، <i>«أوتوتون روبوتي بمقام حجاز»</i>، <i>«أضف دبل وهارموني»</i>، <i>«حلّل صوتي وصلّحه»</i>، أو <i>«سوّ بيت تراب 140»</i>.');
+    return;
+  }
+  if(wantsAuto && !its.length && !maqam && keyIdx===null && !wantDouble && !wantHarm && !wantOct) return aiAuto(t);
+  if(wantsAuto && t.clips.length) await aiAuto(t, true);
+  const styles = its.filter(i=>i.kind==='style'), mods = its.filter(i=>i.kind==='mod');
+  if(styles.length){ const keepGeq = t.fx.geq; t.fx = defFx(); if(wantsAuto) t.fx.geq = keepGeq; if(!styles.some(s=>['trap','shilat','pop'].includes(s.id))) x.at.tune = false; }
+  styles.forEach(s => { s.run(t.fx, k, x); done.push(s.label); });
+  mods.forEach(m => { m.run(t.fx, k, x); done.push(m.label); });
+  if(maqam){ t.at.scale = maqam; if(!t.at.tune && !styles.length && !mods.length) t.at.tune = true; done.push('المقام: '+maqam); }
+  if(keyIdx!==null){ t.at.key = keyIdx; done.push('المفتاح: '+AT_KEYS[keyIdx]); }
+  t.vol = x.vol; t.preset = 'مخصص';
+  if(t.n){ applyFx(t.n, t.fx, ctx); setVolPan(t.n, t, isAudible(t)); }
+  AI.history.push(before);
+  const diff = describeDiff(before, t);
+  const pitchChanged = before.at.tune!==t.at.tune || before.at.shift!==t.at.shift || (t.at.tune && (before.at.speed!==t.at.speed || before.at.scale!==t.at.scale || before.at.key!==t.at.key || before.at.amount!==t.at.amount));
+  if(t.at.tune || t.at.shift) t.at.on = true;
+  if(pitchChanged && t.clips.length){
+    if(t.at.tune || t.at.shift) await applyAutotune(t, null, true);
+    else { const cl = t.clips.filter(c=>c.raw); cl.forEach(c => { c.buffer=c.raw.buffer; c.offset=c.raw.offset; c.duration=c.raw.duration; c.raw=null; c.tuned=false; }); }
+  }
+  let layerMsg = '';
+  if(wantDouble || wantHarm || wantOct){
+    if(!t.clips.length) layerMsg = '<br>⚠ عشان أضيف طبقات (دبل/هارموني) لازم يكون فيه تسجيل في المسار المحدد أولاً.';
+    else {
+      const made = [];
+      if(wantDouble) made.push(...(await makeLayer(t,'double')||[]));
+      if(wantHarm) made.push(...(await makeLayer(t, hasWord(text,toks,['كورال','كورس','طبقات']) ? 'harmony2' : 'harmony')||[]));
+      if(wantOct) made.push(...(await makeLayer(t,'octave')||[]));
+      if(made.length) layerMsg = `<br>🎶 أضفت طبقات صوتية من تسجيلك في المسارات: <b>${made.map(escapeHtml).join('، ')}</b>`;
+    }
+  }
+  renderTracks(); renderPanel();
+  const head = done.length ? `✔ طبّقت <b>${done.map(escapeHtml).join(' + ')}</b> على «${escapeHtml(t.name)}»${k<1?' (بشكل خفيف)':k>1?' (بقوة)':''}` : '';
+  aiSay('ai', head + (diff.length ? '<ul>'+diff.map(d=>'<li>'+escapeHtml(d)+'</li>').join('')+'</ul>' : '') + layerMsg +
+    (!t.clips.length && done.length ? '<br><span class="note">الإعدادات جاهزة — سجّل على هذا المسار وبتسمعها مباشرة.</span>' : ''));
+}
+async function aiAuto(t, quiet){
+  if(!t.clips.length){ aiSay('ai','المسار «'+escapeHtml(t.name)+'» فاضي — سجّل صوتك أولاً وبعدها أحلله وأصلحه.'); return; }
+  showModal('المساعد يحلل صوتك…'); await new Promise(r=>setTimeout(r,30));
+  const before = snapshotTrack(t);
+  const notes = await autoMix(t);
+  hideModal();
+  if(!notes){ aiSay('ai','ما قدرت أحلل الصوت — يمكن التسجيل قصير أو صامت.'); return; }
+  t.preset = 'مخصص';
+  if(t.n){ applyFx(t.n, t.fx, ctx); setVolPan(t.n, t, isAudible(t)); }
+  if(!quiet) AI.history.push(before);
+  renderTracks(); renderPanel();
+  aiSay('ai', `🔍 حللت «${escapeHtml(t.name)}» وصلّحت:<ul>${notes.map(n=>'<li>'+escapeHtml(n)+'</li>').join('')}</ul>`);
+}
+async function aiLoadRef(file){
+  ensureCtx();
+  showModal('المساعد يسمع الأغنية المثال…');
+  try{
+    const buf = await ctx.decodeAudioData(await file.arrayBuffer());
+    const x = clipMono({buffer:buf, offset:0, duration:buf.duration}), sr = buf.sampleRate;
+    const A = await analyzeAudio(x, sr), bpm = detectBPM(x.length>sr*60 ? x.subarray(sr*10, sr*60) : x, sr);
+    AI.ref = {name:file.name, A, bpm, buf};
+    hideModal();
+    const bright = A.bands[5]-A.bands[3], bass = A.bands[0]-A.bands[2];
+    aiSay('user', '🎧 '+escapeHtml(file.name));
+    aiSay('ai', `سمعت المثال 👌<ul><li>السرعة تقريباً <b>${bpm||'—'} BPM</b> ${bpm?`<button class="mini2" onclick="S.bpm=${bpm};$('#bpm').value=${bpm};onBpmChange();toast('تم ضبط السرعة على ${bpm}')">استخدمها</button>`:''}</li>
+      <li>الطابع: ${bass>-4?'باص قوي':'باص معتدل'} · ${bright>-12?'لامع وحاد':bright<-20?'دافئ وناعم':'متوازن'} · ${A.peakDb-A.rmsDb<12?'مضغوط وعالي (ستايل حديث)':'ديناميكي وطبيعي'}</li></ul>
+      ${S.sel && S.sel.clips.length ? '' : 'سجّل صوتك ثم '}اضغط <b>«طابق صوتي مع المثال»</b> وأخلّي صوتك قريب من طابعه.
+      <div class="row-btns" style="margin-top:6px"><button class="btn-acc" onclick="aiMatch(S.sel)">طابق صوتي مع المثال</button><button onclick="aiRefAsTrack()">أضف المثال كمسار للمقارنة</button></div>`);
+  }catch(e){ hideModal(); toast('تعذّر قراءة الملف'); }
+}
+async function aiMatch(t){
+  if(!AI.ref) return aiSay('ai','ارفع أغنية مثال أولاً.');
+  if(!t || !t.clips.length) return aiSay('ai','حدد مسار فيه تسجيلك (مثل «الصوت الرئيسي») وبعدها اضغط طابق.');
+  showModal('أطابق صوتك مع المثال…'); await new Promise(r=>setTimeout(r,30));
+  const before = snapshotTrack(t);
+  const out = await matchReference(t, AI.ref);
+  hideModal();
+  if(!out) return aiSay('ai','ما قدرت أحلل تسجيلك.');
+  t.preset='مخصص'; if(t.n) applyFx(t.n, t.fx, ctx);
+  AI.history.push(before); renderTracks(); renderPanel();
+  aiSay('ai', `🎯 طابقت طابع «${escapeHtml(t.name)}» مع «${escapeHtml(AI.ref.name)}»:<ul>${out.length?out.map(o=>'<li>EQ '+escapeHtml(o)+'</li>').join(''):'<li>صوتك أصلاً قريب من المثال</li>'}<li>ضاغط ${t.fx.th} dB · ${t.fx.ratio}:1</li></ul>تقدر تكتب بعدها مثلاً «زد الصدى» أو «خلّه أنعم شوي».`);
+}
+function aiRefAsTrack(){
+  if(!AI.ref) return;
+  pushUndo();
+  const t = addTrack('مثال: '+AI.ref.name.replace(/\.[^.]+$/,'').slice(0,18)); t.vol = -6; t.mute = true;
+  addClip(t, AI.ref.buf, 0, AI.ref.name);
+  renderTracks(); renderPanel(); toast('أضفت المثال كمسار مكتوم — شغّل زر M للمقارنة');
+}
+const AI_CHIPS = ['خلّ صوتي ناعم ودافئ','صوت راب خشن وقوي','صوت تراب مع أوتوتون روبوتي','أضف دبل للصوت','أضف هارموني وكورال','صوت فخم مع صدى ستاد','شيلات بمقام بياتي','صوت إذاعي واضح','حلّل صوتي وصلّحه','شيل الضوضاء','خلّ الصوت أعمق شوي','سوّ بيت تراب 140','سوّ بيت خليجي','صوت طربي مع ريفيرب'];
+function renderAssistant(){
+  const p = $('#pAI');
+  p.innerHTML = `<div class="aiwrap">
+    <div class="ailog" id="aiLog"></div>
+    <div class="aiside">
+      <div class="aitarget">يعدّل على: <b id="aiT">—</b> <span class="note">(اختر المسار من القائمة)</span></div>
+      <form id="aiForm" class="aiform"><input type="text" id="aiIn" placeholder="اكتب اللي تبيه… مثال: صوت راب خشن مع صدى" autocomplete="off"><button class="btn-acc">نفّذ ✨</button></form>
+      <div class="chips">${AI_CHIPS.map(c=>`<button class="chip2">${c}</button>`).join('')}</div>
+      <div class="row-btns"><button id="aiAutoB">🔍 حلّل وصلّح تلقائياً</button><button id="aiRefB">🎧 أعطه أغنية مثال</button><button id="aiUndoB">↶ تراجع عن آخر تعديل</button></div>
+      <input type="file" id="aiRefFile" accept="audio/*" hidden>
+    </div></div>`;
+  $('#aiForm').onsubmit = e => { e.preventDefault(); const v = $('#aiIn').value; $('#aiIn').value=''; aiRun(v); };
+  $('#aiIn').addEventListener('keydown', stopKeys);
+  p.querySelectorAll('.chip2').forEach(b => b.onclick = () => aiRun(b.textContent));
+  $('#aiAutoB').onclick = () => aiAuto(S.sel);
+  $('#aiRefB').onclick = () => $('#aiRefFile').click();
+  $('#aiRefFile').onchange = e => { if(e.target.files[0]) aiLoadRef(e.target.files[0]); e.target.value=''; };
+  $('#aiUndoB').onclick = aiUndo;
+  if(!AI.log.length) AI.log.push({role:'ai', html:'أهلاً 👋 أنا مساعدك الذكي في الاستوديو. اكتب لي بالعربي وش تبي صوتك يكون: <b>ناعم، خشن، راب، تراب، شيلات، طربي، فخم، إذاعي</b>… أو أعطني <b>أغنية مثال</b> وأخلّي صوتك قريب من طابعها، أو اطلب <b>دبل وهارموني</b> وأضيف أصوات فوق صوتك، أو <b>بيت</b> جاهز.'});
+  renderAiLog();
+}
+function renderAiLog(){
+  const l = $('#aiLog'); if(!l) return;
+  l.innerHTML = AI.log.map(m => `<div class="msg ${m.role}">${m.html}</div>`).join('');
+  l.scrollTop = l.scrollHeight;
+  const tt = $('#aiT'); if(tt) tt.textContent = S.sel ? S.sel.name : '—';
+}
+
+
+/* =========================================================
+   PROJECT SAVE / OPEN  (.sadapro = header JSON + WAV blobs)
+   ========================================================= */
+async function saveProject(){
+  if(S.recording || P.rec) return toast('أوقف التسجيل أولاً');
+  showModal('جاري حفظ المشروع…'); await new Promise(r=>setTimeout(r,30));
+  const bufs = new Map(), chunks = []; let off = 0;
+  const ref = b => { if(!b) return null; if(!bufs.has(b)){ const ab = toWavBytes(b); bufs.set(b, {id:bufs.size, off, len:ab.byteLength}); chunks.push(ab); off += ab.byteLength; } return bufs.get(b).id; };
+  const meta = {
+    app:'SadaPro', v:1, saved:new Date().toISOString(), bpm:S.bpm, sig:S.sig, pps:S.pps, mfx:S.mfx, loop:S.loop, loopStart:S.loopStart, loopEnd:S.loopEnd, recCount:S.recCount, pianoCount:P.count,
+    sel: tracks.indexOf(S.sel),
+    tracks: tracks.map(t => ({name:t.name, color:t.color, vol:t.vol, pan:t.pan, mute:t.mute, solo:t.solo, kind:t.kind, fx:t.fx, at:t.at, preset:t.preset,
+      clips: t.clips.map(c => ({b:ref(c.buffer), start:c.start, offset:c.offset, duration:c.duration, gain:c.gain, name:c.name, tuned:!!c.tuned,
+        raw: c.raw ? {b:ref(c.raw.buffer), offset:c.raw.offset, duration:c.raw.duration} : null}))})),
+  };
+  meta.buffers = [...bufs.values()].map(v => ({off:v.off, len:v.len}));
+  const js = new TextEncoder().encode(JSON.stringify(meta));
+  const head = new Uint8Array(8); head.set([83,65,68,65]); new DataView(head.buffer).setUint32(4, js.byteLength, true);
+  const blob = new Blob([head, js, ...chunks], {type:'application/octet-stream'});
+  hideModal();
+  const name = (prompt_safe() || 'مشروع-صدى-برو') + '.sadapro';
+  download(blob, name);
+  toast('💾 تم حفظ المشروع ('+(blob.size/1048576).toFixed(1)+' MB) — افتحه لاحقاً من «فتح مشروع»');
+}
+function prompt_safe(){ return 'مشروع-صدى-برو-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-'); }
+function toWavBytes(b){ return toWavRaw(b); }
+async function openProject(file){
+  ensureCtx();
+  showModal('جاري فتح المشروع…');
+  try{
+    let ab = await file.arrayBuffer();
+    const inner = unzipOne(ab); if(inner) ab = inner;
+    const dv = new DataView(ab);
+    if(String.fromCharCode(...new Uint8Array(ab,0,4)) !== 'SADA') throw new Error('bad');
+    const jl = dv.getUint32(4, true), meta = JSON.parse(new TextDecoder().decode(new Uint8Array(ab, 8, jl)));
+    const base = 8 + jl;
+    const bufs = await Promise.all(meta.buffers.map(m => ctx.decodeAudioData(ab.slice(base+m.off, base+m.off+m.len))));
+    if(S.playing) pause();
+    tracks.forEach(t => { if(t.n) try{ t.n.output.disconnect(); }catch(e){} });
+    tracks = []; undoStack = []; S.selClip = null;
+    S.bpm = meta.bpm; S.sig = meta.sig; S.pps = meta.pps||60; Object.assign(S.mfx, meta.mfx); S.loop = meta.loop; S.loopStart = meta.loopStart; S.loopEnd = meta.loopEnd; S.recCount = meta.recCount||0; P.count = meta.pianoCount||0;
+    $('#bpm').value = S.bpm; $('#sig').value = S.sig; $('#zoom').value = S.pps; $('#bLoop').classList.toggle('on', S.loop);
+    if(M) applyMaster(M, S.mfx);
+    meta.tracks.forEach(d => {
+      const t = { id:uid++, name:d.name, color:d.color, vol:d.vol, pan:d.pan, mute:d.mute, solo:d.solo, arm:false, kind:d.kind||'audio',
+        fx:Object.assign(defFx(), d.fx), at:Object.assign(defAT(), d.at), preset:d.preset, clips:[] };
+      t.clips = d.clips.map(c => ({id:uid++, buffer:bufs[c.b], start:c.start, offset:c.offset, duration:c.duration, gain:c.gain, name:c.name, tuned:c.tuned,
+        raw: c.raw ? {buffer:bufs[c.raw.b], offset:c.raw.offset, duration:c.raw.duration} : null}));
+      tracks.push(t); attachTrackNodes(t);
+    });
+    S.sel = tracks[meta.sel] || tracks[0] || null; S.playhead = 0;
+    hideModal(); refreshMix(); updateMonitorRoute(); renderTracks(); renderPanel(); updatePlayhead(true);
+    toast('📂 تم فتح المشروع: '+tracks.length+' مسار');
+  }catch(e){ hideModal(); toast('الملف غير صالح أو تالف — اختر ملف .sadapro'); }
+}
+
+function stopKeys(e){ if(!((e.ctrlKey||e.metaKey) && e.code==='KeyS')) e.stopPropagation(); }
+
+/* record via the phone's own camera app (works even where the page has no mic permission) */
+async function captureImport(file){
+  ensureCtx();
+  showModal('جاري استخراج الصوت من التسجيل…');
+  try{
+    const buf = await ctx.decodeAudioData(await file.arrayBuffer());
+    hideModal();
+    pushUndo();
+    const t = (S.sel && !S.sel.clips.length && S.sel.kind!=='piano' && S.sel.name!==BEAT_NAME) ? S.sel
+      : (tracks.find(x=>!x.clips.length && ['الصوت الرئيسي','أدليبز','تسجيل إضافي'].includes(x.name)) || addTrack('تسجيل '+(S.recCount+1)));
+    S.recCount++;
+    const c = addClip(t, buf, S.capPos ?? S.playhead, 'تسجيل '+S.recCount);
+    S.sel = t; S.selClip = {track:t, clip:c};
+    renderTracks(); renderPanel();
+    if(t.at.on && (t.at.tune!==false || t.at.shift)) await applyAutotune(t, [c], true);
+    toast('✔ تم إضافة تسجيلك إلى «'+t.name+'» ('+fmtTime(buf.duration)+') — اسحبه لمكانه الصحيح');
+  }catch(e){ hideModal(); toast('ما قدرت أقرأ الصوت من الفيديو — جرّب مرة ثانية'); }
+}
+function micBlockedHelp(){
+  $('#micHelp').classList.add('show');
+}
+
+/* =========================================================
+   UTIL
+   ========================================================= */
+function fmtTime(s){ s = Math.max(0,s); const m = Math.floor(s/60), r = s - m*60; return String(m).padStart(2,'0')+':'+r.toFixed(3).padStart(6,'0'); }
+function fmtShort(s){ const m = Math.floor(s/60), r = Math.floor(s%60); return m+':'+String(r).padStart(2,'0'); }
+function panTxt(p){ return Math.abs(p)<.02 ? 'C' : (p<0 ? 'L'+Math.round(-p*100) : 'R'+Math.round(p*100)); }
+function hexA(h,a){ const n = parseInt(h.slice(1),16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let toastT; function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 2600); }
+function showModal(m){ $('#modalTxt').textContent = m; $('#modal').classList.add('show'); }
+function hideModal(){ $('#modal').classList.remove('show'); }
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+$('#bPlay').onclick = togglePlay;
+$('#bStop').onclick = stopT;
+$('#bHome').onclick = () => seek(0);
+$('#bRec').onclick = record;
+$('#bLoop').onclick = () => { S.loop = !S.loop; if(S.loop && S.loopEnd <= S.loopStart + .1){ S.loopStart = 0; S.loopEnd = Math.max(60/S.bpm*S.sig*4, 1); } $('#bLoop').classList.toggle('on', S.loop); drawRuler(); updateLoopZone(); };
+$('#bMetro').onclick = () => { S.metro = !S.metro; $('#bMetro').classList.toggle('on', S.metro); ensureCtx(); };
+$('#bCount').onclick = () => { S.countIn = !S.countIn; $('#bCount').classList.toggle('on', S.countIn); };
+$('#bSnap').onclick = () => { S.snap = !S.snap; $('#bSnap').classList.toggle('on', S.snap); };
+function onBpmChange(){ tracks.forEach(t => { if(t.n) applyFx(t.n, t.fx, ctx); }); layoutWidth(); }
+$('#bpm').onchange = e => { S.bpm = Math.max(40, Math.min(240, +e.target.value || 90)); e.target.value = S.bpm; onBpmChange(); };
+$('#bpm').addEventListener('keydown', stopKeys);
+$('#sig').onchange = e => { S.sig = +e.target.value; layoutWidth(); };
+$('#zoom').oninput = e => { const p = curPosSafe(); S.pps = +e.target.value; renderTracks(); const x = HEAD + p*S.pps; scrollEl.scrollLeft = Math.max(0, x - scrollEl.clientWidth/2); };
+$('#bAdd').onclick = () => { ensureCtx(); addTrack(); };
+$('#bImport').onclick = () => $('#file').click();
+$('#micHelpCap').onclick = () => { $('#micHelp').classList.remove('show'); $('#file').click(); };
+$('#file').onchange = e => { importFiles(e.target.files); e.target.value=''; };
+$('#bDemo').onclick = () => makeDemoBeat();
+$('#bDash').onclick = e => { document.querySelector('.dash').classList.toggle('show'); e.target.classList.toggle('on'); setupCanvases(); };
+$('#bCompact').onclick = e => { contentEl.classList.toggle('compact'); e.target.classList.toggle('on'); requestAnimationFrame(()=>renderTracks()); };
+$('#bUndo').onclick = undo;
+$('#bExport').onclick = exportMix;
+$('#bSave').onclick = saveProject;
+/* install as app (PWA) */
+let installEvt = null;
+const isStandalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; $('#bInstall').style.display = ''; });
+window.addEventListener('appinstalled', () => { $('#bInstall').style.display = 'none'; toast('✔ تم تثبيت التطبيق'); });
+if(isIOS && !isStandalone && location.protocol.startsWith('http')) $('#bInstall').style.display = '';
+$('#bInstall').onclick = async () => {
+  if(installEvt){ installEvt.prompt(); await installEvt.userChoice; installEvt = null; $('#bInstall').style.display='none'; }
+  else if(isIOS) $('#iosHint').classList.add('show');
+};
+if('launchQueue' in window) launchQueue.setConsumer(async p => { if(p.files && p.files.length){ const f = await p.files[0].getFile(); openProject(f); } });
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+$('#bOpen').onclick = () => $('#projFile').click();
+$('#projFile').onchange = e => { if(e.target.files[0]) openProject(e.target.files[0]); e.target.value=''; };
+scrollEl.addEventListener('dragover', e => e.preventDefault());
+scrollEl.addEventListener('drop', e => { e.preventDefault(); importFiles(e.dataTransfer.files, null, 0); });
+scrollEl.addEventListener('wheel', e => { if(e.ctrlKey || e.metaKey){ e.preventDefault(); const z = $('#zoom'); z.value = Math.max(10, Math.min(500, S.pps * (e.deltaY<0?1.15:.87))); z.oninput({target:z}); } }, {passive:false});
+
+window.addEventListener('keydown', e => {
+  if((e.ctrlKey||e.metaKey) && e.code==='KeyS'){ e.preventDefault(); saveProject(); return; }
+  if(e.target.matches('input[type=text],input[type=number],input.name,select')) return;
+  if(pianoActive() && !e.ctrlKey && !e.metaKey && !e.altKey){
+    if(e.code in PC_KEYS){ e.preventDefault(); if(!e.repeat) noteOn(12*(P.oct+1) + PC_KEYS[e.code]); return; }
+    if(e.code==='KeyZ'){ P.oct=Math.max(1,P.oct-1); renderPiano(); return; }
+    if(e.code==='KeyX'){ P.oct=Math.min(7,P.oct+1); renderPiano(); return; }
+    if(e.key==='Shift'){ P.shiftSus = true; return; }
+  }
+  const k = e.key.toLowerCase();
+  if(e.code === 'Space'){ e.preventDefault(); togglePlay(); }
+  else if(k === 'r' || e.code==='KeyR'){ if(!e.ctrlKey && !e.metaKey){ e.preventDefault(); record(); } }
+  else if(e.key === 'Home' || e.key === 'Enter'){ e.preventDefault(); seek(0); }
+  else if(e.key === 'Delete' || e.key === 'Backspace'){ e.preventDefault(); clipOps.del(); }
+  else if((e.ctrlKey||e.metaKey) && (k==='z' || e.code==='KeyZ')){ e.preventDefault(); undo(); }
+  else if((e.ctrlKey||e.metaKey) && e.code==='KeyS'){ e.preventDefault(); saveProject(); }
+  else if((e.ctrlKey||e.metaKey) && (k==='d' || e.code==='KeyD')){ e.preventDefault(); clipOps.dup(); }
+  else if(e.code==='KeyS' && !e.ctrlKey && !e.metaKey){ e.preventDefault(); clipOps.split(); }
+  else if(e.code==='KeyL'){ $('#bLoop').click(); }
+  else if(e.code==='KeyM'){ $('#bMetro').click(); }
+  else if(e.key === '+' || e.key === '='){ const z=$('#zoom'); z.value=Math.min(500,S.pps*1.25); z.oninput({target:z}); }
+  else if(e.key === '-'){ const z=$('#zoom'); z.value=Math.max(10,S.pps*.8); z.oninput({target:z}); }
+});
+window.addEventListener('keyup', e => {
+  if(e.code in PC_KEYS) for(let o=1;o<=7;o++) noteOff(12*(o+1) + PC_KEYS[e.code]);
+  if(e.key==='Shift'){ P.shiftSus = false; releaseSustain(); }
+});
+window.addEventListener('blur', () => { if(typeof P!=='undefined'){ P.shiftSus=false; allNotesOff(); } });
+document.addEventListener('mousedown', () => { if(ctx && ctx.state==='suspended') ctx.resume(); });
+
+/* =========================================================
+   INIT
+   ========================================================= */
+[['البيت / اللحن'],['الصوت الرئيسي'],['دبل'],['دبل 2'],['هارموني'],['كورال'],['أدليبز'],['بيانو','piano'],['بيس'],['درامز'],['مؤثرات'],['تسجيل إضافي']].forEach(([n,k]) => { const t = addTrack(n); if(k) t.kind = k; });
+tracks[1].fx = Object.assign(defFx(), PRESETS['فوكال احترافي']); tracks[1].preset = 'فوكال احترافي';
+tracks[6].fx = Object.assign(defFx(), PRESETS['فوكال احترافي'], ECHO_PRESETS['بينغ بونغ ستيريو']); tracks[6].pan = .3; tracks[6].vol = -4; tracks[6].preset = 'مخصص';
+tracks[7].fx = Object.assign(defFx(), {revMix:.18, revSize:2.2}); tracks[7].preset = 'مخصص';
+S.sel = tracks[1];
+renderTracks(); renderPanel(); renderPiano(); renderAssistant(); setupCanvases();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
