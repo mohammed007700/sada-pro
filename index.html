@@ -165,6 +165,9 @@ input[type=checkbox]{accent-color:var(--acc);width:15px;height:15px}
 .pk.blk.down{background:linear-gradient(180deg,#2bb37a,#167a52);color:#fff}
 .pk em{font-style:normal;font-size:10px;font-weight:700;opacity:.8}
 .pk small{font-size:9px;opacity:.6}
+.micpick{background:var(--bg);border:1px solid var(--line2);border-radius:9px;padding:2px 4px 2px 8px;font-size:12px;color:var(--tx2)}
+.micpick select{max-width:210px;border:0;background:transparent;font-size:12.5px}
+.micpick button{padding:4px 8px;font-size:12px}
 .capbtn{border-color:var(--rec);color:#ffb3bb}
 .pianorec{border-color:var(--rec);color:var(--rec)}
 .pianorec.recon{background:var(--rec);color:#fff;animation:pulse 1s infinite}
@@ -285,6 +288,7 @@ kbd{font-family:var(--mono);font-size:10.5px;background:var(--bg);border:1px sol
 <section class="editor">
   <div class="etools">
     <button id="bAdd">＋ مسار جديد</button>
+    <div class="grp micpick"><span>🎤 المايك</span><select id="micPick"><option value="">الافتراضي (حسب النظام)</option></select><button id="micGo">🎤 تفعيل</button><button id="micRefresh" title="تحديث قائمة الأجهزة">↻</button></div>
     <button id="bImport">📂 استيراد لحن / صوت</button>
 
     <div class="grp"><select id="beatStyle"><option value="pop">بوب</option><option value="trap">تراب</option><option value="boombap">بوم باب</option><option value="khaleeji">خليجي</option></select><button id="bDemo">🥁 ولّد بيت</button></div>
@@ -327,10 +331,11 @@ kbd{font-family:var(--mono);font-size:10.5px;background:var(--bg);border:1px sol
 </div>
 
 <div class="toast" id="toast"></div>
-<div class="modal" id="micHelp"><div class="box" style="max-width:360px;line-height:1.9">
-  <div style="font-size:18px;font-weight:800;margin-bottom:6px">🎤 المايك غير متاح في هذي الصفحة</div>
-  سجّل صوتك بتطبيق <b>المذكرات الصوتية</b> في الآيفون، ثم من التسجيل: <b>مشاركة ← حفظ في الملفات</b>. بعدها اضغط الزر تحت واختر التسجيل، ويدخل على المسار مع كل الفلاتر والأوتوتون.
-  <div class="row-btns" style="justify-content:center;margin-top:10px"><button class="btn-acc" id="micHelpCap">📂 اختر تسجيلك</button><button onclick="document.getElementById('micHelp').classList.remove('show')">إغلاق</button></div></div></div>
+<div class="modal" id="micHelp"><div class="box" style="max-width:420px;line-height:1.9;text-align:right">
+  <div id="micHelpT" style="font-size:18px;font-weight:800;margin-bottom:6px;text-align:center">🎤 المايك ما اشتغل</div>
+  <div id="micHelpD"></div>
+  <div class="note" style="margin-top:8px">💡 بديل: سجّل بأي برنامج وارفعه من «📂 استيراد لحن / صوت».</div>
+  <div class="row-btns" style="justify-content:center;margin-top:10px"><button class="btn-acc" onclick="document.getElementById('micHelp').classList.remove('show');initMic(true)">↻ حاول مرة ثانية</button><button id="micHelpCap">📂 استيراد تسجيل</button><button onclick="document.getElementById('micHelp').classList.remove('show')">إغلاق</button></div></div></div>
 <div class="modal" id="iosHint"><div class="box" style="max-width:340px;line-height:1.9">
   <div style="font-size:18px;font-weight:800;margin-bottom:6px">📲 تثبيت على الآيفون</div>
   1) اضغط زر <b>المشاركة</b> <span style="font-size:18px">⎋</span> أسفل سفاري<br>2) اختر <b>«إضافة إلى الشاشة الرئيسية»</b><br>3) اضغط <b>إضافة</b> — وبيطلع التطبيق بأيقونته
@@ -656,22 +661,46 @@ function startSchedulers(){
    ========================================================= */
 let mic = null, micSrc, inGain, inAn, proc, sink, monGain, rec = null;
 
+const MIC_ERR = {
+  NotAllowedError:['تم رفض إذن المايك','اضغط على رمز القفل 🔒 بجانب الرابط في أعلى المتصفح ← الميكروفون ← «سماح»، ثم حدّث الصفحة.<br>في ويندوز تأكد أيضاً: الإعدادات ← الخصوصية والأمان ← الميكروفون ← فعّل «السماح للتطبيقات بالوصول» و«السماح لتطبيقات سطح المكتب».<br>في الماك: إعدادات النظام ← الخصوصية والأمان ← الميكروفون ← فعّل Chrome.'],
+  SecurityError:['المايك مقفول في هذي الصفحة','افتح البرنامج من رابطه الخاص: <b>mohammed007700.github.io/sada-pro</b> — صفحات claude.ai لا تسمح بالمايك.'],
+  NotFoundError:['ما فيه مايك متصل','وصّل المايك أو السماعة، ثم اختره من قائمة «🎤 المايك» واضغط «تحديث».'],
+  NotReadableError:['المايك مستخدم في برنامج ثاني','سكّر البرامج اللي ممكن تستخدمه (Zoom، Discord، Teams، OBS…) ثم اختر المايك من جديد.'],
+  OverconstrainedError:['المايك المحدد غير موجود','اختر مايك ثاني من القائمة.'],
+};
+function inFrame(){ try{ return window.self !== window.top; }catch(e){ return true; } }
+function micFail(name, detail){
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  let [t, d] = MIC_ERR[name] || ['تعذّر تشغيل المايك', 'جرّب مايك ثاني من القائمة، أو حدّث الصفحة.'];
+  if(inFrame() && (name==='NotAllowedError' || name==='SecurityError' || !name)) [t, d] = MIC_ERR.SecurityError;
+  if(isIOS && !inFrame() && name==='NotAllowedError') d = 'الإعدادات ← سفاري ← الميكروفون ← «سماح»، أو من قائمة «aA» بجانب الرابط ← إعدادات الموقع ← الميكروفون.';
+  $('#micHelpT').textContent = '🎤 ' + t;
+  $('#micHelpD').innerHTML = d + (detail ? `<div class="note" style="margin-top:6px;direction:ltr">${escapeHtml(detail)}</div>` : '');
+  $('#micHelp').classList.add('show');
+  $('#micState').textContent = '✖ ' + t;
+  setMicPickState(false);
+}
 async function initMic(force){
   ensureCtx();
   if(mic && !force) return true;
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    micBlockedHelp(); return false;
-  }
-  if(mic){ mic.getTracks().forEach(t=>t.stop()); try{ micSrc.disconnect(); }catch(e){} }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ micFail(window.isSecureContext===false ? 'SecurityError' : 'SecurityError'); return false; }
+  if(mic){ mic.getTracks().forEach(t=>t.stop()); try{ micSrc.disconnect(); }catch(e){} mic = null; }
+  const opts = id => ({audio:{ deviceId: id ? {exact:id} : undefined, echoCancellation:S.ec, noiseSuppression:S.ns, autoGainControl:false, channelCount:{ideal:1} }});
   try{
-    mic = await navigator.mediaDevices.getUserMedia({audio:{
-      deviceId: S.deviceId ? {exact:S.deviceId} : undefined,
-      echoCancellation:S.ec, noiseSuppression:S.ns, autoGainControl:false, channelCount:1 }});
-  }catch(e){
-    mic = null;
-    $('#micState').textContent='المايك غير متاح هنا'; micBlockedHelp(); return false;
+    try{ mic = await navigator.mediaDevices.getUserMedia(opts(S.deviceId)); }
+    catch(e){
+      if(S.deviceId && (e.name==='OverconstrainedError' || e.name==='NotFoundError' || e.name==='NotReadableError')){
+        toast('المايك المحفوظ غير متاح — استخدمت المايك الافتراضي'); S.deviceId=''; saveMicPref();
+        mic = await navigator.mediaDevices.getUserMedia(opts(''));
+      } else throw e;
+    }
+  }catch(e){ mic = null; micFail(e.name, e.message); return false; }
+  try{ micSrc = ctx.createMediaStreamSource(mic); }
+  catch(e){
+    // e.g. Firefox when the mic's sample rate differs from the AudioContext
+    mic.getTracks().forEach(t=>t.stop()); mic = null;
+    micFail('', 'اختلاف معدل العيّنة بين المايك والمتصفح — استخدم Chrome أو Edge. ('+e.message+')'); return false;
   }
-  micSrc = ctx.createMediaStreamSource(mic);
   if(!inGain){
     inGain = ctx.createGain(); inAn = ctx.createAnalyser(); inAn.fftSize = 1024;
     proc = ctx.createScriptProcessor(1024, 1, 1); sink = ctx.createGain(); sink.gain.value = 0;
@@ -688,18 +717,30 @@ async function initMic(force){
   micSrc.connect(inGain);
   updateMonitorRoute();
   const tr = mic.getAudioTracks()[0];
+  const set = tr.getSettings ? tr.getSettings() : {};
+  if(set.deviceId && !S.deviceId) S.curDevice = set.deviceId; else S.curDevice = S.deviceId;
   $('#micState').textContent = '✔ ' + (tr.label || 'ميكروفون');
-  listDevices();
+  tr.onended = () => { mic = null; setMicPickState(false); toast('انفصل المايك — اختره من جديد'); };
+  setMicPickState(true);
+  await listDevices();
   return true;
 }
+function saveMicPref(){ try{ localStorage.setItem('sada.mic', S.deviceId||''); }catch(e){} }
+try{ S.deviceId = localStorage.getItem('sada.mic') || ''; }catch(e){}
+function setMicPickState(ok){ const b = $('#micGo'); if(b){ b.classList.toggle('on', !!ok); b.textContent = ok ? '✔ شغّال' : '🎤 تفعيل'; } }
 async function listDevices(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
   try{
     const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='audioinput');
-    const sel = $('#devSel'); if(!sel) return;
-    sel.innerHTML = devs.map(d=>`<option value="${d.deviceId}">${d.label||'ميكروفون'}</option>`).join('');
-    if(S.deviceId) sel.value = S.deviceId;
+    const hasLabels = devs.some(d=>d.label);
+    const opts = '<option value="">الافتراضي (حسب النظام)</option>' +
+      devs.filter(d=>d.deviceId && d.deviceId!=='default').map((d,i)=>`<option value="${d.deviceId}">${escapeHtml(d.label||('ميكروفون '+(i+1)))}</option>`).join('') +
+      (hasLabels ? '' : '<option value="__ask" disabled>— فعّل المايك لعرض الأسماء —</option>');
+    ['#devSel','#micPick'].forEach(q => { const sel = document.querySelector(q); if(!sel) return; sel.innerHTML = opts; sel.value = [...sel.options].some(o=>o.value===S.deviceId) ? S.deviceId : ''; });
   }catch(e){}
 }
+async function pickMic(id){ S.deviceId = id; saveMicPref(); if(await initMic(true)) toast('🎤 تم اختيار: '+(mic.getAudioTracks()[0].label||'المايك')); }
+if(navigator.mediaDevices && navigator.mediaDevices.addEventListener) navigator.mediaDevices.addEventListener('devicechange', () => { listDevices(); });
 function updateMonitorRoute(){
   if(!monGain) return;
   try{ monGain.disconnect(); }catch(e){}
@@ -1168,7 +1209,7 @@ function renderSettings(){
   const autoLat = ctx ? Math.round(((ctx.outputLatency||0)+(ctx.baseLatency||0))*1000) : null;
   p.innerHTML = `<div class="fxgrid">
     <div class="fxbox" style="grid-column:span 2"><h5>الميكروفون</h5>
-      <div class="row-btns"><select id="devSel" style="flex:1;min-width:200px"><option>— اضغط "تفعيل المايك" لعرض الأجهزة —</option></select><button id="micOn" class="btn-acc">🎤 تفعيل المايك</button></div>
+      <div class="row-btns"><select id="devSel" style="flex:1;min-width:200px"><option value="">الافتراضي (حسب النظام)</option></select><button id="micOn" class="btn-acc">🎤 تفعيل المايك</button></div>
       ${g.html}
       <label class="toggle"><input type="checkbox" id="sEc" ${S.ec?'checked':''}> إلغاء الصدى (أوقفه للتسجيل الاحترافي بالسماعات)</label>
       <label class="toggle"><input type="checkbox" id="sNs" ${S.ns?'checked':''}> تقليل الضوضاء من المتصفح</label></div>
@@ -1182,12 +1223,12 @@ function renderSettings(){
   </div>`;
   g.bind(); l.bind();
   $('#micOn').onclick = () => initMic(true);
-  $('#devSel').onchange = e => { S.deviceId = e.target.value; initMic(true); };
+  $('#devSel').onchange = e => pickMic(e.target.value);
   $('#sEc').onchange = e => { S.ec = e.target.checked; if(mic) initMic(true); };
   $('#sNs').onchange = e => { S.ns = e.target.checked; if(mic) initMic(true); };
   $('#sMon').onchange = e => { S.monitor = e.target.checked; if(S.monitor && !mic) initMic(); updateMonitorRoute(); };
   $('#sMonFx').onchange = e => { S.monitorFx = e.target.checked; updateMonitorRoute(); };
-  if(mic) listDevices();
+  listDevices();
 }
 document.querySelectorAll('.tab').forEach(b => b.onclick = () => {
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on', x===b));
@@ -2147,9 +2188,7 @@ async function captureImport(file){
     toast('✔ تم إضافة تسجيلك إلى «'+t.name+'» ('+fmtTime(buf.duration)+') — اسحبه لمكانه الصحيح');
   }catch(e){ hideModal(); toast('ما قدرت أقرأ الصوت من الفيديو — جرّب مرة ثانية'); }
 }
-function micBlockedHelp(){
-  $('#micHelp').classList.add('show');
-}
+
 
 /* =========================================================
    UTIL
@@ -2181,6 +2220,10 @@ $('#sig').onchange = e => { S.sig = +e.target.value; layoutWidth(); };
 $('#zoom').oninput = e => { const p = curPosSafe(); S.pps = +e.target.value; renderTracks(); const x = HEAD + p*S.pps; scrollEl.scrollLeft = Math.max(0, x - scrollEl.clientWidth/2); };
 $('#bAdd').onclick = () => { ensureCtx(); addTrack(); };
 $('#bImport').onclick = () => $('#file').click();
+$('#micPick').onchange = e => pickMic(e.target.value);
+$('#micGo').onclick = () => initMic(true);
+$('#micRefresh').onclick = async () => { await listDevices(); toast('تم تحديث قائمة المايكات'); };
+listDevices();
 $('#micHelpCap').onclick = () => { $('#micHelp').classList.remove('show'); $('#file').click(); };
 $('#file').onchange = e => { importFiles(e.target.files); e.target.value=''; };
 $('#bDemo').onclick = () => makeDemoBeat();
